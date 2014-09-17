@@ -303,7 +303,86 @@ namespace StudentAI
         /// <param name="moves">The collection of moves we're adding to</param>
         private void AddRookMoves(ChessBoard board, ChessColor myColor, int x, int y, IList<ChessMove> moves)
         {
+            const int LEFT  = 1;
+            const int RIGHT = 2;
+            const int UP = 4;
+            const int DOWN = 8;
 
+            int flags = LEFT + RIGHT + UP + DOWN;
+
+            for (int i = 1; ; i++)
+            {              
+                // Try left
+                if ((flags & LEFT) > 0)
+                {
+                    int newX = x - i;
+                    int newY = y;
+
+                    if (!InBounds(newX, newY))
+                        flags -= LEFT;
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    {
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        flags -= LEFT;
+                    }
+                }
+
+                // Try right
+                if ((flags & RIGHT) > 0)
+                {
+                    int newX = x + i;
+                    int newY = y;
+
+                    if (!InBounds(newX, newY))
+                        flags -= RIGHT;
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    {
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        flags -= RIGHT;
+                    }
+                }
+
+                // Try up
+                if ((flags & UP) > 0)
+                {
+                    int newX = x;
+                    int newY = y - i;
+
+                    if (!InBounds(newX, newY))
+                        flags -= UP;
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    {
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        flags -= UP;
+                    }
+                }
+
+                // Try down
+                if ((flags & DOWN) > 0)
+                {
+                    int newX = x;
+                    int newY = y + i;
+
+                    if (!InBounds(newX, newY))
+                        flags -= DOWN;
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    {
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        flags -= DOWN;
+                    }
+                }
+
+                if (flags == 0)
+                    break;
+            }
         }
 
         /// <summary>
