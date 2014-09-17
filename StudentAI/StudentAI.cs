@@ -123,27 +123,27 @@ namespace StudentAI
                     {
                         case ChessPiece.WhiteBishop:
                         case ChessPiece.BlackBishop:
-                            AddBishopMoves(board, myColor, chessPiece, allMoves);
+                            AddBishopMoves(board, myColor, x, y, allMoves);
                             break;
                         case ChessPiece.WhiteKing:
                         case ChessPiece.BlackKing:
-                            AddKingMoves(board, myColor, chessPiece, allMoves);
+                            AddKingMoves(board, myColor, x, y, allMoves);
                             break;
                         case ChessPiece.WhiteKnight:
                         case ChessPiece.BlackKnight:
-                            AddKnightMoves(board, myColor, chessPiece, allMoves);
+                            AddKnightMoves(board, myColor, x, y, allMoves);
                             break;
                         case ChessPiece.WhitePawn:
                         case ChessPiece.BlackPawn:
-                            AddPawnMoves(board, myColor, chessPiece, allMoves);
+                            AddPawnMoves(board, myColor, x, y, allMoves);
                             break;
                         case ChessPiece.WhiteQueen:
                         case ChessPiece.BlackQueen:
-                            AddQueenMoves(board, myColor, chessPiece, allMoves);
+                            AddQueenMoves(board, myColor, x, y, allMoves);
                             break;
                         case ChessPiece.WhiteRook:
                         case ChessPiece.BlackRook:
-                            AddRookMoves(board, myColor, chessPiece, allMoves);
+                            AddRookMoves(board, myColor, x, y, allMoves);
                             break;
                         default:
                             break;
@@ -160,7 +160,7 @@ namespace StudentAI
         /// <param name="board">Current board</param>
         /// <param name="myColor">Your color</param>
         /// <param name="moves">The collection of moves we're adding to</param>
-        private void AddBishopMoves(ChessBoard board, ChessColor myColor, ChessPiece piece, ICollection<ChessMove> moves)
+        private void AddBishopMoves(ChessBoard board, ChessColor myColor, int x, int y, ICollection<ChessMove> moves)
         {
 
         }
@@ -171,7 +171,7 @@ namespace StudentAI
         /// <param name="board">Current board</param>
         /// <param name="myColor">Your color</param>
         /// <param name="moves">The collection of moves we're adding to</param>
-        private void AddKingMoves(ChessBoard board, ChessColor myColor, ChessPiece piece, ICollection<ChessMove> moves)
+        private void AddKingMoves(ChessBoard board, ChessColor myColor, int x, int y, ICollection<ChessMove> moves)
         {
 
         }
@@ -182,7 +182,7 @@ namespace StudentAI
         /// <param name="board">Current board</param>
         /// <param name="myColor">Your color</param>
         /// <param name="moves">The collection of moves we're adding to</param>
-        private void AddKnightMoves(ChessBoard board, ChessColor myColor, ChessPiece piece, ICollection<ChessMove> moves)
+        private void AddKnightMoves(ChessBoard board, ChessColor myColor, int x, int y, ICollection<ChessMove> moves)
         {
 
         }
@@ -193,9 +193,9 @@ namespace StudentAI
         /// <param name="board">Current board</param>
         /// <param name="myColor">Your color</param>
         /// <param name="moves">The collection of moves we're adding to</param>
-        private void AddPawnMoves(ChessBoard board, ChessColor myColor, ChessPiece piece, ICollection<ChessMove> moves)
+        private void AddPawnMoves(ChessBoard board, ChessColor myColor, int x, int y, ICollection<ChessMove> moves)
         {
-
+            
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace StudentAI
         /// <param name="board">Current board</param>
         /// <param name="myColor">Your color</param>
         /// <param name="moves">The collection of moves we're adding to</param>
-        private void AddQueenMoves(ChessBoard board, ChessColor myColor, ChessPiece piece, ICollection<ChessMove> moves)
+        private void AddQueenMoves(ChessBoard board, ChessColor myColor, int x, int y, ICollection<ChessMove> moves)
         {
 
         }
@@ -215,7 +215,7 @@ namespace StudentAI
         /// <param name="board">Current board</param>
         /// <param name="myColor">Your color</param>
         /// <param name="moves">The collection of moves we're adding to</param>
-        private void AddRookMoves(ChessBoard board, ChessColor myColor, ChessPiece piece, ICollection<ChessMove> moves)
+        private void AddRookMoves(ChessBoard board, ChessColor myColor, int x, int y, ICollection<ChessMove> moves)
         {
 
         }
