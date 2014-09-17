@@ -247,74 +247,38 @@ namespace StudentAI
         /// <param name="moves">The collection of moves we're adding to</param>
         private void AddPawnMoves(ChessBoard board, ChessColor myColor, int x, int y, IList<ChessMove> moves)
         {
-            if (myColor == ChessColor.Black)
-            {
-                // Move forward 2 spaces from starting position
-                if (y == 1 &&
-                    board[x, y + 1] == ChessPiece.Empty &&
-                    board[x, y + 2] == ChessPiece.Empty)
-                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y + 2)));
+            int forwardDirection = myColor == ChessColor.Black ? 1 : -1;
+            int startingRow = myColor == ChessColor.Black ? 1 : ChessBoard.NumberOfRows - 2;
 
-                // Move forward 1 space
-                if (InBounds(x, y + 1) && board[x, y + 1] == ChessPiece.Empty)                    
-                    moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y + 1)));
+            int newX, newY;
 
-                // Diagonal attack (forward-left)
-                if (InBounds(x + 1, y + 1))
-                {
-                    int newX = x + 1;
-                    int newY = y + 1;
-                    var pieceInNewPos = board[newX, newY];
+            // Move forward 2 spaces from starting position
+            if (y == startingRow &&
+                board[x, y + forwardDirection] == ChessPiece.Empty &&
+                board[x, y + forwardDirection * 2] == ChessPiece.Empty)
+                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y + forwardDirection * 2)));
 
-                    if (pieceInNewPos != ChessPiece.Empty && _pieceColor[pieceInNewPos] == ChessColor.White)
-                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                }
+            // Move forward 1 space if it's empty
+            if (InBounds(x, y + forwardDirection) && board[x, y + forwardDirection] == ChessPiece.Empty)
+                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y + forwardDirection)));
 
-                // Diagonal attack (forward-right)
-                if (InBounds(x - 1, y + 1))
-                {
-                    int newX = x - 1;
-                    int newY = y + 1;
-                    var pieceInNewPos = board[newX, newY];
+            // Diagonal attack (forward-left)
+            newX = x - 1;
+            newY = y + forwardDirection;
 
-                    if (pieceInNewPos != ChessPiece.Empty && _pieceColor[pieceInNewPos] == ChessColor.White)
-                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                }
-            }
-            else // White pawn
-            {
-                // Move forward 2 spaces from starting position
-                if (y == ChessBoard.NumberOfRows - 2 &&
-                    board[x, y - 1] == ChessPiece.Empty && 
-                    board[x, y - 2] == ChessPiece.Empty)
-                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y - 2)));
+            if (InBounds(newX, newY) &&
+                board[newX, newY] != ChessPiece.Empty &&
+                _pieceColor[board[newX, newY]] != myColor)
+                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
 
-                // Move forward 1 space
-                if (InBounds(x, y - 1) && board[x, y - 1] == ChessPiece.Empty)
-                    moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y - 1)));
+            // Diagonal attack (forward-right)
+            newX = x + 1;
+            newY = y + forwardDirection;
 
-                // Diagonal attack (forward-left)
-                if (InBounds(x - 1, y - 1))
-                {
-                    int newX = x - 1;
-                    int newY = y - 1;
-                    var pieceInNewPos = board[newX, newY];
-
-                    if (pieceInNewPos != ChessPiece.Empty && _pieceColor[pieceInNewPos] == ChessColor.Black)
-                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                }
-
-                // Diagonal attack (forward-right)
-                if (InBounds(x + 1, y - 1))
-                {
-                    int newX = x + 1;
-                    int newY = y - 1;
-                    var pieceInNewPos = board[newX, newY];
-
-                    if (pieceInNewPos != ChessPiece.Empty && _pieceColor[pieceInNewPos] == ChessColor.Black)
-                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                }
-            }
+            if (InBounds(newX, newY) &&
+                board[newX, newY] != ChessPiece.Empty &&
+                _pieceColor[board[newX, newY]] != myColor)
+                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
         }
 
         /// <summary>
