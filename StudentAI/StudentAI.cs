@@ -223,11 +223,11 @@ namespace StudentAI
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y + 2)));
 
                 // Move forward 1 space
-                if (y < ChessBoard.NumberOfRows - 1 && board[x, y + 1] == ChessPiece.Empty)                    
+                if (InBounds(x, y + 1) && board[x, y + 1] == ChessPiece.Empty)                    
                     moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y + 1)));
 
                 // Diagonal attack (forward-left)
-                if (y < ChessBoard.NumberOfRows - 1 && x < ChessBoard.NumberOfColumns - 1)
+                if (InBounds(x + 1, y + 1))
                 {
                     int newX = x + 1;
                     int newY = y + 1;
@@ -238,7 +238,7 @@ namespace StudentAI
                 }
 
                 // Diagonal attack (forward-right)
-                if (y < ChessBoard.NumberOfRows - 1 && x > 0)
+                if (InBounds(x - 1, y + 1))
                 {
                     int newX = x - 1;
                     int newY = y + 1;
@@ -257,11 +257,11 @@ namespace StudentAI
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y - 2)));
 
                 // Move forward 1 space
-                if (y > 0 && board[x, y - 1] == ChessPiece.Empty)
+                if (InBounds(x, y - 1) && board[x, y - 1] == ChessPiece.Empty)
                     moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y - 1)));
 
                 // Diagonal attack (forward-left)
-                if (y > 0 && x > 0)
+                if (InBounds(x - 1, y - 1))
                 {
                     int newX = x - 1;
                     int newY = y - 1;
@@ -272,7 +272,7 @@ namespace StudentAI
                 }
 
                 // Diagonal attack (forward-right)
-                if (y > 0 && x < ChessBoard.NumberOfColumns - 1)
+                if (InBounds(x + 1, y - 1))
                 {
                     int newX = x + 1;
                     int newY = y - 1;
@@ -304,6 +304,17 @@ namespace StudentAI
         private void AddRookMoves(ChessBoard board, ChessColor myColor, int x, int y, IList<ChessMove> moves)
         {
 
+        }
+
+        /// <summary>
+        /// Check if coordinates are on the board
+        /// </summary>
+        /// <param name="x">x-coordinate</param>
+        /// <param name="y">y-coordinate</param>
+        /// <returns>Returns true if on board; else false</returns>
+        private bool InBounds(int x, int y)
+        {
+            return (x >= 0 && x < ChessBoard.NumberOfColumns) && (y >= 0 && y < ChessBoard.NumberOfRows);
         }
 
         #endregion
