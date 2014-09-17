@@ -201,7 +201,42 @@ namespace StudentAI
         /// <param name="moves">The collection of moves we're adding to</param>
         private void AddKnightMoves(ChessBoard board, ChessColor myColor, int x, int y, IList<ChessMove> moves)
         {
+            var offsets1 = new int[] { -1, 1 };
+            var offsets2 = new int[] { -2, 2 };
 
+            // Try permutations where we move 1 space X and 2 spaces Y
+            foreach (int xOffset in offsets1)
+            {
+                foreach (int yOffset in offsets2)
+                {
+                    int newX = x + xOffset;
+                    int newY = y + yOffset;
+
+                    if (!InBounds(newX, newY))
+                        continue;
+
+                    var pieceAtNewPos = board[newX, newY];
+                    if (pieceAtNewPos == ChessPiece.Empty || _pieceColor[pieceAtNewPos] != myColor)
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                }
+            }
+
+            // Try permutations where we move 2 spaces X and 1 space Y
+            foreach (int xOffset in offsets2)
+            {
+                foreach (int yOffset in offsets1)
+                {
+                    int newX = x + xOffset;
+                    int newY = y + yOffset;
+                    
+                    if (!InBounds(newX, newY))
+                        continue;
+
+                    var pieceAtNewPos = board[newX, newY];
+                    if (pieceAtNewPos == ChessPiece.Empty || _pieceColor[pieceAtNewPos] != myColor)
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                }
+            }
         }
 
         /// <summary>
