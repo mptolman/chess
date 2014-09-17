@@ -35,9 +35,9 @@ namespace StudentAI
         public string Name
         {
 #if DEBUG
-            get { return "StudentAI (Debug)"; }
+            get { return "KnottyButchersAI (Debug)"; }
 #else
-            get { return "StudentAI"; }
+            get { return "KnottyButchersAI"; }
 #endif
         }
 
@@ -57,9 +57,9 @@ namespace StudentAI
             if (allMoves.Count == 0)
             {
                 // No moves available
-                // Flag as stalemate
+                // What do we do now?
+                // Maybe see if the opponent has any moves. If not, then stalemate
                 nextMove = new ChessMove(null, null);
-                nextMove.Flag = ChessFlag.Stalemate;
             }
             else
             {
@@ -71,9 +71,7 @@ namespace StudentAI
                 // TODO : Use algorithm for selecting move
                 // 1) Random
                 // 2) Greedy
-                // 3) Minimax
-                // Maybe we should break these out into separate DLL's so they can be selected on demand from the GUI.
-                // We'll share the move generator between DLL's so we can keep common code centralized in one place.
+                // 3) MiniMax
             }
 
             return nextMove;
@@ -305,14 +303,14 @@ namespace StudentAI
         {
             const int LEFT  = 1;
             const int RIGHT = 2;
-            const int UP = 4;
-            const int DOWN = 8;
+            const int UP    = 4;
+            const int DOWN  = 8;
 
-            int flags = LEFT + RIGHT + UP + DOWN;
+            int flags = LEFT | RIGHT | UP | DOWN;
 
             // Search outward from our current location, one square distance at a time
-            for (int i = 1; ; i++)
-            {              
+            for (int i = 1; ; ++i)
+            {
                 // Try left
                 if ((flags & LEFT) > 0)
                 {
