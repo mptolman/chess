@@ -310,6 +310,7 @@ namespace StudentAI
 
             int flags = LEFT + RIGHT + UP + DOWN;
 
+            // Search outward from our current location, one square distance at a time
             for (int i = 1; ; i++)
             {              
                 // Try left
@@ -320,13 +321,18 @@ namespace StudentAI
 
                     if (!InBounds(newX, newY))
                         flags -= LEFT;
-                    else if (board[newX, newY] == ChessPiece.Empty)
+                    else if (board[newX, newY] == ChessPiece.Empty) 
+                        // Move to an empty space
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    else if (_pieceColor[board[newX, newY]] != myColor) 
                     {
+                        // Capture an opponent's piece
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                         flags -= LEFT;
                     }
+                    else 
+                        // We've run into one of our own pieces
+                        flags -= LEFT;
                 }
 
                 // Try right
@@ -338,12 +344,17 @@ namespace StudentAI
                     if (!InBounds(newX, newY))
                         flags -= RIGHT;
                     else if (board[newX, newY] == ChessPiece.Empty)
+                        // Move to an empty space
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                     else if (_pieceColor[board[newX, newY]] != myColor)
                     {
+                        // Capture an opponent's piece
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                         flags -= RIGHT;
                     }
+                    else 
+                        // We've run into one of our own pieces
+                        flags -= RIGHT;
                 }
 
                 // Try up
@@ -354,13 +365,18 @@ namespace StudentAI
 
                     if (!InBounds(newX, newY))
                         flags -= UP;
-                    else if (board[newX, newY] == ChessPiece.Empty)
+                    else if (board[newX, newY] == ChessPiece.Empty) 
+                        // Move to an empty space
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                     else if (_pieceColor[board[newX, newY]] != myColor)
                     {
+                        // Capture an opponent's piece
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                         flags -= UP;
                     }
+                    else
+                        // We've run into one of our own pieces
+                        flags -= UP;
                 }
 
                 // Try down
@@ -372,14 +388,20 @@ namespace StudentAI
                     if (!InBounds(newX, newY))
                         flags -= DOWN;
                     else if (board[newX, newY] == ChessPiece.Empty)
+                        // Move to an empty space
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    else if (_pieceColor[board[newX, newY]] != myColor) 
                     {
+                        // Capture an opponent's piece
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                         flags -= DOWN;
                     }
+                    else
+                        // We've run into one of our own pieces
+                        flags -= DOWN;
                 }
 
+                // No more moves
                 if (flags == 0)
                     break;
             }
