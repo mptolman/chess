@@ -22,15 +22,37 @@ namespace StudentAI
         }
 
         /// <summary>
-        /// Evaluates the chess board and decided which move to make. This is the main method of the AI.
+        /// Evaluates the chess board and decides which move to make. This is the main method of the AI.
         /// The framework will call this method when it's your turn.
         /// </summary>
         /// <param name="board">Current chess board</param>
         /// <param name="yourColor">Your color</param>
-        /// <returns> Returns the best chess move the player has for the given chess board</returns>
+        /// <returns>Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-            throw (new NotImplementedException());
+            ChessMove nextMove = null;
+
+            // Populate a list of all possible moves
+            var allMoves = GetAllMoves(board, myColor);
+
+            if (allMoves.Count == 0)
+            {
+                // No moves available
+                // Flag as stalemate
+                nextMove = new ChessMove(null, null);
+                nextMove.Flag = ChessFlag.Stalemate;
+            }
+            else
+            {
+                // TODO : Use algorithm for selecting move
+                // 1) Random
+                // 2) Greedy
+                // 3) Minimax
+                // Maybe we should break these out into separate DLL's so they can be selected on demand from the GUI.
+                // We'll share the move generator between DLL's so we can keep common code centralized in one place.
+            }
+
+            return nextMove;
         }
 
         /// <summary>
@@ -42,7 +64,73 @@ namespace StudentAI
         /// <returns>Returns true if the move was valid</returns>
         public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
-            throw (new NotImplementedException());
+            // TODO : Implement move validator
+            // One option is to call our move generator using their chess piece, and if this move is in our collection of valid moves, then it's valid. Otherwise, invalid.
+
+            // Special situations to consider:
+            // Be sure to check that appropriate flags are set; e.g., if opponent puts our King in check and doesn't set ChessFlag.Check, it's invalid!
+            // Opponent may not put their own King in check.
+
+            // Just return true for now, so we can perform testing before this is built.
+            return true;
+        }
+
+        /// <summary>
+        /// Populates a list of all possible (VALID) moves.
+        /// </summary>
+        /// <param name="board">Current chess board</param>
+        /// <param name="myColor">Your color</param>
+        /// <returns>Returns a collection of all possible moves</returns>
+        private ICollection<ChessMove> GetAllMoves(ChessBoard board, ChessColor myColor)
+        {
+            ICollection<ChessMove> allMoves = new List<ChessMove>();
+
+            // Cycle through the board and generate moves for each of our pieces
+            // QUESTION : Do we need to reverse the direction of movement between white and black pieces? Or is our viewpoint the same regardless of color?
+            for (int x = 0; x < ChessBoard.NumberOfRows; ++x)
+            {
+                for (int y = 0; y < ChessBoard.NumberOfColumns; ++y)
+                {
+                    if (myColor == ChessColor.White)
+                    {
+                        switch(board[x,y])
+                        {
+                            case ChessPiece.WhiteBishop:
+                                break;
+                            case ChessPiece.WhiteKing:
+                                break;
+                            case ChessPiece.WhiteKnight:
+                                break;
+                            case ChessPiece.WhitePawn:
+                                break;
+                            case ChessPiece.WhiteQueen:
+                                break;
+                            case ChessPiece.WhiteRook:
+                                break;
+                        }
+                    }
+                    else // myColor is ChessColor.Black
+                    {
+                        switch (board[x, y])
+                        {
+                            case ChessPiece.BlackBishop:
+                                break;
+                            case ChessPiece.BlackKing:
+                                break;
+                            case ChessPiece.BlackKnight:
+                                break;
+                            case ChessPiece.BlackPawn:
+                                break;
+                            case ChessPiece.BlackQueen:
+                                break;
+                            case ChessPiece.BlackRook:
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return allMoves;
         }
 
         #endregion
