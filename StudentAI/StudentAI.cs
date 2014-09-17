@@ -6,7 +6,27 @@ using UvsChess;
 namespace StudentAI
 {
     public class StudentAI : IChessAI
-    {
+    {        
+        /// <summary>
+        /// Utility dictionary for determing the color of a piece.
+        /// We could also use a lookup method, but I thought a dictionary would be slightly more efficient.
+        /// </summary>
+        private static IDictionary<ChessPiece, ChessColor> _pieceColor = new Dictionary<ChessPiece, ChessColor>
+        {
+            {ChessPiece.BlackBishop,    ChessColor.Black},
+            {ChessPiece.BlackKing,      ChessColor.Black},
+            {ChessPiece.BlackKnight,    ChessColor.Black},
+            {ChessPiece.BlackPawn,      ChessColor.Black},
+            {ChessPiece.BlackQueen,     ChessColor.Black},
+            {ChessPiece.BlackRook,      ChessColor.Black},
+            {ChessPiece.WhiteBishop,    ChessColor.White},
+            {ChessPiece.WhiteKing,      ChessColor.White},
+            {ChessPiece.WhiteKnight,    ChessColor.White},
+            {ChessPiece.WhitePawn,      ChessColor.White},
+            {ChessPiece.WhiteQueen,     ChessColor.White},
+            {ChessPiece.WhiteRook,      ChessColor.White}
+        };
+
         #region IChessAI Members that are implemented by the Student
 
         /// <summary>
@@ -75,6 +95,10 @@ namespace StudentAI
             return true;
         }
 
+        #endregion
+
+        #region Private utility functions
+
         /// <summary>
         /// Populates a list of all possible (VALID) moves.
         /// </summary>
@@ -86,46 +110,43 @@ namespace StudentAI
             ICollection<ChessMove> allMoves = new List<ChessMove>();
 
             // Cycle through the board and generate moves for each of our pieces
-            // QUESTION : Do we need to reverse the direction of movement between white and black pieces? Or is our viewpoint the same regardless of color?
-            for (int x = 0; x < ChessBoard.NumberOfRows; ++x)
+            for (int y = 0; y < ChessBoard.NumberOfRows; ++y)
             {
-                for (int y = 0; y < ChessBoard.NumberOfColumns; ++y)
+                for (int x = 0; x < ChessBoard.NumberOfColumns; ++x)
                 {
-                    if (myColor == ChessColor.White)
+                    var chessPiece = board[x, y];
+
+                    if (chessPiece == ChessPiece.Empty) continue; // Ignore empty tiles                    
+                    if (_pieceColor[chessPiece] != myColor) continue; // Ignore opponent's pieces
+
+                    switch (chessPiece)
                     {
-                        switch(board[x,y])
-                        {
-                            case ChessPiece.WhiteBishop:
-                                break;
-                            case ChessPiece.WhiteKing:
-                                break;
-                            case ChessPiece.WhiteKnight:
-                                break;
-                            case ChessPiece.WhitePawn:
-                                break;
-                            case ChessPiece.WhiteQueen:
-                                break;
-                            case ChessPiece.WhiteRook:
-                                break;
-                        }
-                    }
-                    else // myColor is ChessColor.Black
-                    {
-                        switch (board[x, y])
-                        {
-                            case ChessPiece.BlackBishop:
-                                break;
-                            case ChessPiece.BlackKing:
-                                break;
-                            case ChessPiece.BlackKnight:
-                                break;
-                            case ChessPiece.BlackPawn:
-                                break;
-                            case ChessPiece.BlackQueen:
-                                break;
-                            case ChessPiece.BlackRook:
-                                break;
-                        }
+                        case ChessPiece.WhiteBishop:
+                        case ChessPiece.BlackBishop:
+                            AddBishopMoves(board, myColor, allMoves);
+                            break;
+                        case ChessPiece.WhiteKing:
+                        case ChessPiece.BlackKing:
+                            AddKingMoves(board, myColor, allMoves);
+                            break;
+                        case ChessPiece.WhiteKnight:
+                        case ChessPiece.BlackKnight:
+                            AddKnightMoves(board, myColor, allMoves);
+                            break;
+                        case ChessPiece.WhitePawn:
+                        case ChessPiece.BlackPawn:
+                            AddPawnMoves(board, myColor, allMoves);
+                            break;
+                        case ChessPiece.WhiteQueen:
+                        case ChessPiece.BlackQueen:
+                            AddQueenMoves(board, myColor, allMoves);
+                            break;
+                        case ChessPiece.WhiteRook:
+                        case ChessPiece.BlackRook:
+                            AddRookMoves(board, myColor, allMoves);
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
@@ -133,20 +154,73 @@ namespace StudentAI
             return allMoves;
         }
 
+        /// <summary>
+        /// Adds moves for a Bishop to our collection of available moves
+        /// </summary>
+        /// <param name="board">Current board</param>
+        /// <param name="myColor">Your color</param>
+        /// <param name="moves">The collection of moves we're adding to</param>
+        private void AddBishopMoves(ChessBoard board, ChessColor myColor, ICollection<ChessMove> moves)
+        {
+
+        }
+
+        /// <summary>
+        /// Adds moves for a King to our collection of available moves
+        /// </summary>
+        /// <param name="board">Current board</param>
+        /// <param name="myColor">Your color</param>
+        /// <param name="moves">The collection of moves we're adding to</param>
+        private void AddKingMoves(ChessBoard board, ChessColor myColor, ICollection<ChessMove> moves)
+        {
+
+        }
+
+        /// <summary>
+        /// Adds moves for a Knight to our collection of available moves
+        /// </summary>
+        /// <param name="board">Current board</param>
+        /// <param name="myColor">Your color</param>
+        /// <param name="moves">The collection of moves we're adding to</param>
+        private void AddKnightMoves(ChessBoard board, ChessColor myColor, ICollection<ChessMove> moves)
+        {
+
+        }
+
+        /// <summary>
+        /// Adds moves for a Pawn to our collection of available moves
+        /// </summary>
+        /// <param name="board">Current board</param>
+        /// <param name="myColor">Your color</param>
+        /// <param name="moves">The collection of moves we're adding to</param>
+        private void AddPawnMoves(ChessBoard board, ChessColor myColor, ICollection<ChessMove> moves)
+        {
+
+        }
+
+        /// <summary>
+        /// Adds moves for a Queen to our collection of available moves
+        /// </summary>
+        /// <param name="board">Current board</param>
+        /// <param name="myColor">Your color</param>
+        /// <param name="moves">The collection of moves we're adding to</param>
+        private void AddQueenMoves(ChessBoard board, ChessColor myColor, ICollection<ChessMove> moves)
+        {
+
+        }
+
+        /// <summary>
+        /// Adds moves for a Rook to our collection of available moves
+        /// </summary>
+        /// <param name="board">Current board</param>
+        /// <param name="myColor">Your color</param>
+        /// <param name="moves">The collection of moves we're adding to</param>
+        private void AddRookMoves(ChessBoard board, ChessColor myColor, ICollection<ChessMove> moves)
+        {
+
+        }
+
         #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
