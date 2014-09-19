@@ -419,6 +419,77 @@ namespace StudentAI
             return (x >= 0 && x < ChessBoard.NumberOfColumns) && (y >= 0 && y < ChessBoard.NumberOfRows);
         }
 
+        /// <summary>
+        /// Determine if `color` is in check given a board state
+        /// </summary>
+        /// <param name="board">Board we are evaluating</param>
+        /// <param name="color">Color we are evaluating</param>
+        /// <returns>Returns true if the King can be captured in this state; else false</returns>
+        private bool InCheck(ChessBoard board, ChessColor color)
+        {
+            ChessLocation kingLocation;
+            var kingPiece = color == ChessColor.Black ? ChessPiece.BlackKing : ChessPiece.WhiteKing;
+
+            if (FindPiece(board, kingPiece, out kingLocation))
+                return CanBeCaptured(board, color, kingLocation);
+            
+            return false;
+        }
+
+        /// <summary>
+        /// Determine if making a specific move will put `color` in check
+        /// </summary>
+        /// <param name="board">Board before the move is made</param>
+        /// <param name="color">Color we are evaluating</param>
+        /// <param name="move">Move we are evaluating</param>
+        /// <returns>Returns true if making this move will put `color` in check; else false</returns>
+        private bool WillBeInCheck(ChessBoard board, ChessColor color, ChessMove move)
+        {
+            var boardAfterMove = board.Clone();
+            boardAfterMove.MakeMove(move);
+
+            return InCheck(boardAfterMove, color);
+        }
+
+        /// <summary>
+        /// Determine if an opposing piece can capture this location
+        /// </summary>
+        /// <param name="board">Board we are evaluating</param>
+        /// <param name="color">Color we are evaluating to see if its piece can be captured</param>
+        /// <param name="location">Location of the piece we are evaluating</param>
+        /// <returns>Returns true if opposing piece can reach this location; else false</returns>
+        private bool CanBeCaptured(ChessBoard board, ChessColor color, ChessLocation location)
+        {
+            // TODO : Search from location outwards to determine if an opposing piece can attack it
+            return false;
+        }
+
+        /// <summary>
+        /// Find the location of a specific piece on the board
+        /// </summary>
+        /// <param name="board">Board we are evaluating</param>
+        /// <param name="piece">Piece we are looking for</param>
+        /// <param name="location">Location where the piece was found</param>
+        /// <returns>Returns true if the piece is found; else false (already captured). Location will be stored in the "location" parameter if found</returns>
+        private bool FindPiece(ChessBoard board, ChessPiece piece, out ChessLocation location)
+        {
+            location = null;
+
+            for (int y = 0; y < ChessBoard.NumberOfRows; ++y)
+            {
+                for (int x = 0 ; x < ChessBoard.NumberOfColumns; ++x)
+                {
+                    if (board[x, y] == piece)
+                    {
+                        location = new ChessLocation(x, y);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         #endregion
 
 
