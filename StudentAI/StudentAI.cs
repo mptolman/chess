@@ -27,6 +27,13 @@ namespace StudentAI
             {ChessPiece.WhiteRook,      ChessColor.White}
         };
 
+        /// <summary>
+        /// This helps us calculate forward/backward movements without having to branch based on color
+        /// For example, to get the Y-coordinate for moving forward N spaces:
+        ///     location.Y + _colorForwardDirection[myColor] * N
+        /// And to move backwards N spaces:
+        ///     location.Y - _colorForwardDirection[myColor] * N
+        /// </summary>
         private static IDictionary<ChessColor, int> _colorForwardDirection = new Dictionary<ChessColor, int>
         {
             {ChessColor.Black, 1},
@@ -62,10 +69,12 @@ namespace StudentAI
 
             if (allMoves.Count == 0)
             {
-                // No moves available
-                // What do we do now?
-                // Maybe see if the opponent has any moves. If not, then stalemate
+                // This must be stalemate.
+                // Theoretically, we would need to make sure we're not in check before declaring stalemate,
+                // but if we were in check, then the opponent would have flagged checkmate on their last move.
+                // If they didn't set the checkmate flag, then our move validator would have caught their error.
                 nextMove = new ChessMove(null, null);
+                nextMove.Flag = ChessFlag.Stalemate;
             }
             else
             {
@@ -195,15 +204,17 @@ namespace StudentAI
                     {
                         var pieceAtNewPos = board[newX, newY];
 
-                        //add the piece as a potential move if it is empty or if it is occupied by an opponents piece
+                        //add the piece as a potential move if it is empty
                         if (pieceAtNewPos == ChessPiece.Empty)
                         {
                             moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                         }
-                        else//if we've hit an opponent's piece then add that move and stop looking in this direction
+                        else
                         {
+                            //if we've hit an opponent's piece then add that move
                             if (_pieceColor[pieceAtNewPos] != myColor)
                                 moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                            //we've hit another piece, so stop looking in this direction
                             break;
                         }
 
@@ -279,7 +290,7 @@ namespace StudentAI
         /// <param name="moves">The collection of moves we're adding to</param>
         private void AddPawnMoves(ChessBoard board, ChessColor myColor, int x, int y, IList<ChessMove> moves)
         {
-            int forwardDirection = myColor == ChessColor.Black ? 1 : -1;
+            int forwardDirection = _colorForwardDirection[myColor];
             int startingRow = myColor == ChessColor.Black ? 1 : ChessBoard.NumberOfRows - 2;
 
             int newX, newY;
@@ -538,13 +549,18 @@ namespace StudentAI
                     int newY = y;
 
                     if (!InBounds(newX, newY))
+                        // We're out of bounds; stop looking in this direction
                         flags -= LEFT;
-                    else if (board[newX, newY] == ChessPiece.Empty) // Move to an empty space                        
+                    else if (board[newX, newY] == ChessPiece.Empty) 
+                        // Move to an empty space                        
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                    else // We've hit a piece on the board
+                    else
                     {
-                       if (_pieceColor[board[newX, newY]] != myColor) // Capture an opponent's piece
+                        if (_pieceColor[board[newX, newY]] != myColor) 
+                            // Capture an opponent's piece
                             moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+
+                        // We've hit another piece; stop looking in this direction
                         flags -= LEFT;
                     }
                 }
@@ -556,13 +572,18 @@ namespace StudentAI
                     int newY = y;
 
                     if (!InBounds(newX, newY))
+                        // We're out of bounds; stop looking in this direction
                         flags -= RIGHT;
-                    else if (board[newX, newY] == ChessPiece.Empty) // Move to an empty space                       
+                    else if (board[newX, newY] == ChessPiece.Empty) 
+                        // Move to an empty space                       
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                    else // We've hit a piece on the board
+                    else
                     {
-                        if (_pieceColor[board[newX, newY]] != myColor) // Capture an opponent's piece
+                        if (_pieceColor[board[newX, newY]] != myColor) 
+                            // Capture an opponent's piece
                             moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+
+                        // We've hit another piece; stop looking in this direction
                         flags -= RIGHT;
                     }
                 }
@@ -574,13 +595,18 @@ namespace StudentAI
                     int newY = y - distance;
 
                     if (!InBounds(newX, newY))
+                        // We're out of bounds; stop looking in this direction
                         flags -= UP;
-                    else if (board[newX, newY] == ChessPiece.Empty) // Move to an empty space                       
+                    else if (board[newX, newY] == ChessPiece.Empty) 
+                        // Move to an empty space                       
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                    else // We've hit a piece on the board
+                    else
                     {
-                        if (_pieceColor[board[newX, newY]] != myColor) // Capture an opponent's piece
+                        if (_pieceColor[board[newX, newY]] != myColor) 
+                            // Capture an opponent's piece
                             moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+
+                        // We've hit another piece; stop looking in this direction
                         flags -= UP;
                     }
                 }
@@ -592,13 +618,18 @@ namespace StudentAI
                     int newY = y + distance;
 
                     if (!InBounds(newX, newY))
+                        // We're out of bounds; stop looking in this direction
                         flags -= DOWN;
-                    else if (board[newX, newY] == ChessPiece.Empty) // Move to an empty space                       
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        // Move to an empty space
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                    else // We've hit a piece on the board
-                    {
-                        if (_pieceColor[board[newX, newY]] != myColor) // Capture an opponent's piece
+                    else                         
+                    {                        
+                        if (_pieceColor[board[newX, newY]] != myColor)
+                            // Capture an opponent's piece
                             moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+
+                        // We've hit another piece; stop looking in this direction
                         flags -= DOWN;
                     }
                 }
