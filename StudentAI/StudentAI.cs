@@ -27,6 +27,12 @@ namespace StudentAI
             {ChessPiece.WhiteRook,      ChessColor.White}
         };
 
+        private static IDictionary<ChessColor, int> _colorForwardDirection = new Dictionary<ChessColor, int>
+        {
+            {ChessColor.Black, 1},
+            {ChessColor.White, -1}
+        };
+
         #region IChessAI Members that are implemented by the Student
 
         /// <summary>
@@ -190,10 +196,16 @@ namespace StudentAI
                         var pieceAtNewPos = board[newX, newY];
 
                         //add the piece as a potential move if it is empty or if it is occupied by an opponents piece
-                        if(pieceAtNewPos == ChessPiece.Empty || _pieceColor[pieceAtNewPos] != myColor)
+                        if (pieceAtNewPos == ChessPiece.Empty)
+                        {
                             moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                        else //otherwise, we find that one of our own pieces is in the way, so we will stop looking in that diagonal's direction
+                        }
+                        else//if we've hit an opponent's piece then add that move and stop looking in this direction
+                        {
+                            if (_pieceColor[pieceAtNewPos] != myColor)
+                                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                             break;
+                        }
 
                         newX += xOffset;
                         newY += yOffset;
@@ -437,21 +449,6 @@ namespace StudentAI
         }
 
         /// <summary>
-        /// Determine if making a specific move will put `color` in check
-        /// </summary>
-        /// <param name="board">Board before the move is made</param>
-        /// <param name="color">Color we are evaluating</param>
-        /// <param name="move">Move we are evaluating</param>
-        /// <returns>Returns true if making this move will put `color` in check; else false</returns>
-        private bool WillBeInCheck(ChessBoard board, ChessColor color, ChessMove move)
-        {
-            var boardAfterMove = board.Clone();
-            boardAfterMove.MakeMove(move);
-
-            return InCheck(boardAfterMove, color);
-        }
-
-        /// <summary>
         /// Determine if an opposing piece can capture this location
         /// </summary>
         /// <param name="board">Board we are evaluating</param>
@@ -460,7 +457,402 @@ namespace StudentAI
         /// <returns>Returns true if opposing piece can reach this location; else false</returns>
         private bool CanBeCaptured(ChessBoard board, ChessColor color, ChessLocation location)
         {
-            // TODO : Search from location outwards to determine if an opposing piece can attack it
+            const int FORWARD = 1 << 0;
+            const int BACK = 1 << 1;
+            const int LEFT = 1 << 2;
+            const int RIGHT = 1 << 3;
+            const int FORWARD_LEFT = 1 << 4;
+            const int FORWARD_RIGHT = 1 << 5;
+            const int BACK_LEFT = 1 << 6;
+            const int BACK_RIGHT = 1 << 7;
+            const int ALL_DIRECTIONS = (1 << 8) - 1;
+
+            int flags = ALL_DIRECTIONS;
+
+            for (int distance = 1; flags > 0; ++distance)
+            {
+                //------------------------------------
+                // Check FORWARD direction
+                //------------------------------------
+                if ((flags & FORWARD) > 0)
+                {
+                    int newX = location.X;
+                    int newY = location.Y + distance * _colorForwardDirection[color];
+
+                    if (!InBounds(newX, newY))
+                    {
+                        // We're out of bounds; stop looking in this direction
+                        flags -= FORWARD;
+                    }
+                    else
+                    {
+                        var pieceAtPos = board[newX, newY];
+                        if (pieceAtPos != ChessPiece.Empty && _pieceColor[pieceAtPos] != color)
+                        {
+                            switch (pieceAtPos)
+                            {
+                                case ChessPiece.BlackKing:
+                                case ChessPiece.WhiteKing:
+                                    if (distance == 1)
+                                        return true;
+                                    break;
+                                case ChessPiece.BlackQueen:
+                                case ChessPiece.WhiteQueen:
+                                case ChessPiece.BlackRook:
+                                case ChessPiece.WhiteRook:
+                                    return true;
+                                default:
+                                    break;
+                            }
+                        }
+                        // We've hit a non-threatening piece; stop looking in this direction
+                        flags -= FORWARD;
+                    }
+                }
+
+                //------------------------------------
+                // Check BACK direction
+                //------------------------------------
+                if ((flags & BACK) > 0)
+                {
+                    int newX = location.X;
+                    int newY = location.Y - distance * _colorForwardDirection[color];
+
+                    if (!InBounds(newX, newY))
+                    {
+                        // We're out of bounds; stop looking in this direction
+                        flags -= BACK;
+                    }
+                    else
+                    {
+                        var pieceAtPos = board[newX, newY];
+                        if (pieceAtPos != ChessPiece.Empty && _pieceColor[pieceAtPos] != color)
+                        {
+                            switch (pieceAtPos)
+                            {
+                                case ChessPiece.BlackKing:
+                                case ChessPiece.WhiteKing:
+                                    if (distance == 1)
+                                        return true;
+                                    break;
+                                case ChessPiece.BlackQueen:
+                                case ChessPiece.WhiteQueen:
+                                case ChessPiece.BlackRook:
+                                case ChessPiece.WhiteRook:
+                                    return true;
+                                default:
+                                    break;
+                            }
+                        }
+                        // We've hit a non-threatening piece; stop looking in this direction
+                        flags -= BACK;
+                    }
+                }
+
+                //------------------------------------
+                // Check LEFT direction
+                //------------------------------------
+                if ((flags & LEFT) > 0)
+                {
+                    int newX = location.X - distance;
+                    int newY = location.Y;
+
+                    if (!InBounds(newX, newY))
+                    {
+                        // We're out of bounds; stop looking in this direction
+                        flags -= LEFT;
+                    }
+                    else
+                    {
+                        var pieceAtPos = board[newX, newY];
+                        if (pieceAtPos != ChessPiece.Empty && _pieceColor[pieceAtPos] != color)
+                        {
+                            switch (pieceAtPos)
+                            {
+                                case ChessPiece.BlackKing:
+                                case ChessPiece.WhiteKing:
+                                    if (distance == 1)
+                                        return true;
+                                    break;
+                                case ChessPiece.BlackQueen:
+                                case ChessPiece.WhiteQueen:
+                                case ChessPiece.BlackRook:
+                                case ChessPiece.WhiteRook:
+                                    return true;
+                                default:
+                                    break;
+                            }
+                        }
+                        // We've hit a non-threatening piece; stop looking in this direction
+                        flags -= LEFT;
+                    }
+                }
+
+                //------------------------------------
+                // Check RIGHT direction
+                //------------------------------------
+                if ((flags & RIGHT) > 0)
+                {
+                    int newX = location.X + distance;
+                    int newY = location.Y;
+
+                    if (!InBounds(newX, newY))
+                    {
+                        // We're out of bounds; stop looking in this direction
+                        flags -= RIGHT;
+                    }
+                    else
+                    {
+                        var pieceAtPos = board[newX, newY];
+                        if (pieceAtPos != ChessPiece.Empty && _pieceColor[pieceAtPos] != color)
+                        {
+                            switch (pieceAtPos)
+                            {
+                                case ChessPiece.BlackKing:
+                                case ChessPiece.WhiteKing:
+                                    if (distance == 1)
+                                        return true;
+                                    break;
+                                case ChessPiece.BlackQueen:
+                                case ChessPiece.WhiteQueen:
+                                case ChessPiece.BlackRook:
+                                case ChessPiece.WhiteRook:
+                                    return true;
+                                default:
+                                    break;
+                            }
+                        }
+                        // We've hit a non-threatening piece; stop looking in this direction
+                        flags -= RIGHT;
+                    }
+                }
+
+                //------------------------------------
+                // Check FORWARD_LEFT direction
+                //------------------------------------
+                if ((flags & FORWARD_LEFT) > 0)
+                {
+                    int newX = location.X - distance;
+                    int newY = location.Y + distance * _colorForwardDirection[color];
+
+                    if (!InBounds(newX, newY))
+                    {
+                        // We're out of bounds; stop looking in this direction
+                        flags -= FORWARD_LEFT;
+                    }
+                    else
+                    {
+                        var pieceAtPos = board[newX, newY];
+                        if (pieceAtPos != ChessPiece.Empty && _pieceColor[pieceAtPos] != color)
+                        {
+                            switch (pieceAtPos)
+                            {
+                                case ChessPiece.BlackKing:
+                                case ChessPiece.WhiteKing:
+                                case ChessPiece.BlackPawn:
+                                case ChessPiece.WhitePawn:
+                                    if (distance == 1)
+                                        return true;
+                                    break;
+                                case ChessPiece.BlackQueen:
+                                case ChessPiece.WhiteQueen:
+                                case ChessPiece.BlackBishop:
+                                case ChessPiece.WhiteBishop:
+                                    return true;
+                                default:
+                                    break;
+                            }
+                        }
+                        // We've hit a non-threatening piece; stop looking in this direction
+                        flags -= FORWARD_LEFT;
+                    }
+                }
+
+                //------------------------------------
+                // Check FORWARD_RIGHT direction
+                //------------------------------------
+                if ((flags & FORWARD_RIGHT) > 0)
+                {
+                    int newX = location.X + distance;
+                    int newY = location.Y + distance * _colorForwardDirection[color];
+
+                    if (!InBounds(newX, newY))
+                    {
+                        // We're out of bounds; stop looking in this direction
+                        flags -= FORWARD_RIGHT;
+                    }
+                    else
+                    {
+                        var pieceAtPos = board[newX, newY];
+                        if (pieceAtPos != ChessPiece.Empty && _pieceColor[pieceAtPos] != color)
+                        {
+                            switch (pieceAtPos)
+                            {
+                                case ChessPiece.BlackKing:
+                                case ChessPiece.WhiteKing:
+                                case ChessPiece.BlackPawn:
+                                case ChessPiece.WhitePawn:
+                                    if (distance == 1)
+                                        return true;
+                                    break;
+                                case ChessPiece.BlackQueen:
+                                case ChessPiece.WhiteQueen:
+                                case ChessPiece.BlackBishop:
+                                case ChessPiece.WhiteBishop:
+                                    return true;
+                                default:
+                                    break;
+                            }
+                        }
+                        // We've hit a non-threatening piece; stop looking in this direction
+                        flags -= FORWARD_RIGHT;
+                    }
+                }
+
+                //------------------------------------
+                // Check BACK_LEFT direction
+                //------------------------------------
+                if ((flags & BACK_LEFT) > 0)
+                {
+                    int newX = location.X - distance;
+                    int newY = location.Y - distance * _colorForwardDirection[color];
+
+                    if (!InBounds(newX, newY))
+                    {
+                        // We're out of bounds; stop looking in this direction
+                        flags -= BACK_LEFT;
+                    }
+                    else
+                    {
+                        var pieceAtPos = board[newX, newY];
+                        if (pieceAtPos != ChessPiece.Empty && _pieceColor[pieceAtPos] != color)
+                        {
+                            switch (pieceAtPos)
+                            {
+                                case ChessPiece.BlackKing:
+                                case ChessPiece.WhiteKing:
+                                    if (distance == 1)
+                                        return true;
+                                    break;
+                                case ChessPiece.BlackQueen:
+                                case ChessPiece.WhiteQueen:
+                                case ChessPiece.BlackBishop:
+                                case ChessPiece.WhiteBishop:
+                                    return true;
+                                default:
+                                    break;
+                            }
+                        }
+                        // We've hit a non-threatening piece; stop looking in this direction
+                        flags -= BACK_LEFT;
+                    }
+                }
+
+                //------------------------------------
+                // Check BACK_RIGHT direction
+                //------------------------------------
+                if ((flags & BACK_RIGHT) > 0)
+                {
+                    int newX = location.X + distance;
+                    int newY = location.Y - distance * _colorForwardDirection[color];
+
+                    if (!InBounds(newX, newY))
+                    {
+                        // We're out of bounds; stop looking in this direction
+                        flags -= BACK_RIGHT;
+                    }
+                    else
+                    {
+                        var pieceAtPos = board[newX, newY];
+                        if (pieceAtPos != ChessPiece.Empty && _pieceColor[pieceAtPos] != color)
+                        {
+                            switch (pieceAtPos)
+                            {
+                                case ChessPiece.BlackKing:
+                                case ChessPiece.WhiteKing:
+                                    if (distance == 1)
+                                        return true;
+                                    break;
+                                case ChessPiece.BlackQueen:
+                                case ChessPiece.WhiteQueen:
+                                case ChessPiece.BlackBishop:
+                                case ChessPiece.WhiteBishop:
+                                    return true;
+                                default:
+                                    break;
+                            }
+                        }
+                        // We've hit a non-threatening piece; stop looking in this direction
+                        flags -= BACK_RIGHT;
+                    }
+                }
+            }
+
+            //------------------------------------
+            // Check for KNIGHTS
+            //------------------------------------
+            var offsets1 = new int[] { -1, 1 };
+            var offsets2 = new int[] { -2, 2 };
+
+            // Check positions +/-1 in the X direction and +/-2 in the Y direction
+            foreach (var xOffset in offsets1)
+            {
+                foreach (var yOffset in offsets2)
+                {
+                    int newX = location.X + xOffset;
+                    int newY = location.Y + yOffset;
+
+                    // Ignore positions out of bounds
+                    if (!InBounds(newX, newY))
+                        continue;
+
+                    var piece = board[newX, newY];
+
+                    // Ignore pieces of our own
+                    if (_pieceColor[piece] == color)
+                        continue;
+
+                    switch (piece)
+                    {
+                        case ChessPiece.BlackKnight:
+                        case ChessPiece.WhiteKnight:
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            // Check positions +/-2 in the X direction and +/-1 in the Y direction
+            foreach (var xOffset in offsets2)
+            {
+                foreach (var yOffset in offsets1)
+                {
+                    int newX = location.X + xOffset;
+                    int newY = location.Y + yOffset;
+
+                    // Ignore positions out of bounds
+                    if (!InBounds(newX, newY))
+                        continue;
+
+                    var piece = board[newX, newY];
+
+                    // Ignore pieces of our own
+                    if (_pieceColor[piece] == color)
+                        continue;
+
+                    switch (piece)
+                    {
+                        case ChessPiece.BlackKnight:
+                        case ChessPiece.WhiteKnight:
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            // All clear
             return false;
         }
 
