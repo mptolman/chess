@@ -199,6 +199,9 @@ namespace StudentAI
                             moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                         else //otherwise, we find that one of our own pieces is in the way, so we will stop looking in that diagonal's direction
                             break;
+
+                        newX += xOffset;
+                        newY += yOffset;
                     }
                 }
             }
