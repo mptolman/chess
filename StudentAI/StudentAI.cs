@@ -99,7 +99,7 @@ namespace StudentAI
 
         #endregion
 
-        #region Private utility functions
+        #region Move generation methods
 
         /// <summary>
         /// Populates a list of all possible (VALID) moves.
@@ -333,101 +333,85 @@ namespace StudentAI
             int flags = LEFT | RIGHT | UP | DOWN;
 
             // Search outward from our current location, one square distance at a time
-            for (int i = 1; ; ++i)
+            for (int distance = 1; flags > 0; ++distance)
             {
                 // Try left
                 if ((flags & LEFT) > 0)
                 {
-                    int newX = x - i;
+                    int newX = x - distance;
                     int newY = y;
 
                     if (!InBounds(newX, newY))
                         flags -= LEFT;
-                    else if (board[newX, newY] == ChessPiece.Empty) 
-                        // Move to an empty space
+                    else if (board[newX, newY] == ChessPiece.Empty) // Move to an empty space                        
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                    else if (_pieceColor[board[newX, newY]] != myColor) 
+                    else // We've hit a piece on the board
                     {
-                        // Capture an opponent's piece
-                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                       if (_pieceColor[board[newX, newY]] != myColor) // Capture an opponent's piece
+                            moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                         flags -= LEFT;
                     }
-                    else 
-                        // We've run into one of our own pieces
-                        flags -= LEFT;
                 }
 
                 // Try right
                 if ((flags & RIGHT) > 0)
                 {
-                    int newX = x + i;
+                    int newX = x + distance;
                     int newY = y;
 
                     if (!InBounds(newX, newY))
                         flags -= RIGHT;
-                    else if (board[newX, newY] == ChessPiece.Empty)
-                        // Move to an empty space
+                    else if (board[newX, newY] == ChessPiece.Empty) // Move to an empty space                       
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    else // We've hit a piece on the board
                     {
-                        // Capture an opponent's piece
-                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        if (_pieceColor[board[newX, newY]] != myColor) // Capture an opponent's piece
+                            moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                         flags -= RIGHT;
                     }
-                    else 
-                        // We've run into one of our own pieces
-                        flags -= RIGHT;
                 }
 
                 // Try up
                 if ((flags & UP) > 0)
                 {
                     int newX = x;
-                    int newY = y - i;
+                    int newY = y - distance;
 
                     if (!InBounds(newX, newY))
                         flags -= UP;
-                    else if (board[newX, newY] == ChessPiece.Empty) 
-                        // Move to an empty space
+                    else if (board[newX, newY] == ChessPiece.Empty) // Move to an empty space                       
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    else // We've hit a piece on the board
                     {
-                        // Capture an opponent's piece
-                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        if (_pieceColor[board[newX, newY]] != myColor) // Capture an opponent's piece
+                            moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                         flags -= UP;
                     }
-                    else
-                        // We've run into one of our own pieces
-                        flags -= UP;
                 }
 
                 // Try down
                 if ((flags & DOWN) > 0)
                 {
                     int newX = x;
-                    int newY = y + i;
+                    int newY = y + distance;
 
                     if (!InBounds(newX, newY))
                         flags -= DOWN;
-                    else if (board[newX, newY] == ChessPiece.Empty)
-                        // Move to an empty space
+                    else if (board[newX, newY] == ChessPiece.Empty) // Move to an empty space                       
                         moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
-                    else if (_pieceColor[board[newX, newY]] != myColor) 
+                    else // We've hit a piece on the board
                     {
-                        // Capture an opponent's piece
-                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        if (_pieceColor[board[newX, newY]] != myColor) // Capture an opponent's piece
+                            moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
                         flags -= DOWN;
                     }
-                    else
-                        // We've run into one of our own pieces
-                        flags -= DOWN;
                 }
-
-                // No more moves
-                if (flags == 0)
-                    break;
             }
         }
+
+        #endregion
+
+        #region Utility methods
 
         /// <summary>
         /// Check if coordinates are on the board
