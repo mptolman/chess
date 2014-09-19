@@ -321,7 +321,196 @@ namespace StudentAI
         /// <param name="moves">The collection of moves we're adding to</param>
         private void AddQueenMoves(ChessBoard board, ChessColor myColor, int x, int y, IList<ChessMove> moves)
         {
+            const int LEFT = 1;
+            const int RIGHT = 2;
+            const int UP = 4;
+            const int DOWN = 8;
+            const int LEFT_UP = 16;
+            const int LEFT_DOWN = 32;
+            const int RIGHT_UP = 64;
+            const int RIGHT_DOWN = 128;
 
+            int flags = LEFT | RIGHT | UP | DOWN | LEFT_UP | LEFT_DOWN | RIGHT_UP | RIGHT_DOWN;
+
+            // Search outward from our current location, one square distance at a time
+            for (int distance = 1; flags > 0; ++distance)
+            {
+                // Try left
+                if ((flags & LEFT) > 0)
+                {
+                    int newX = x - distance;
+                    int newY = y;
+
+                    if (!InBounds(newX, newY))
+                        flags -= LEFT;
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        // Move to an empty space
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    {
+                        // Capture an opponent's piece
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        flags -= LEFT;
+                    }
+                    else
+                        // We've run into one of our own pieces
+                        flags -= LEFT;
+                }
+
+                // Try right
+                if ((flags & RIGHT) > 0)
+                {
+                    int newX = x + distance;
+                    int newY = y;
+
+                    if (!InBounds(newX, newY))
+                        flags -= RIGHT;
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        // Move to an empty space
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    {
+                        // Capture an opponent's piece
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        flags -= RIGHT;
+                    }
+                    else
+                        // We've run into one of our own pieces
+                        flags -= RIGHT;
+                }
+
+                // Try up
+                if ((flags & UP) > 0)
+                {
+                    int newX = x;
+                    int newY = y - distance;
+
+                    if (!InBounds(newX, newY))
+                        flags -= UP;
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        // Move to an empty space
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    {
+                        // Capture an opponent's piece
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        flags -= UP;
+                    }
+                    else
+                        // We've run into one of our own pieces
+                        flags -= UP;
+                }
+
+                // Try down
+                if ((flags & DOWN) > 0)
+                {
+                    int newX = x;
+                    int newY = y + distance;
+
+                    if (!InBounds(newX, newY))
+                        flags -= DOWN;
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        // Move to an empty space
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    {
+                        // Capture an opponent's piece
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        flags -= DOWN;
+                    }
+                    else
+                        // We've run into one of our own pieces
+                        flags -= DOWN;
+                }
+
+                // Try left up
+                if ((flags & LEFT_UP) > 0)
+                {
+                    int newX = x - distance;
+                    int newY = y - distance;
+
+                    if (!InBounds(newX, newY))
+                        flags -= LEFT_UP;
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        // Move to an empty space
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    {
+                        // Capture an opponent's piece
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        flags -= LEFT_UP;
+                    }
+                    else
+                        // We've run into one of our own pieces
+                        flags -= LEFT_UP;
+                }
+
+                // Try left down
+                if ((flags & LEFT_DOWN) > 0)
+                {
+                    int newX = x - distance;
+                    int newY = y + distance;
+
+                    if (!InBounds(newX, newY))
+                        flags -= LEFT_DOWN;
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        // Move to an empty space
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    {
+                        // Capture an opponent's piece
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        flags -= LEFT_DOWN;
+                    }
+                    else
+                        // We've run into one of our own pieces
+                        flags -= LEFT_DOWN;
+                }
+
+                // Try right up
+                if ((flags & RIGHT_UP) > 0)
+                {
+                    int newX = x + distance;
+                    int newY = y - distance;
+
+                    if (!InBounds(newX, newY))
+                        flags -= RIGHT_UP;
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        // Move to an empty space
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    {
+                        // Capture an opponent's piece
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        flags -= RIGHT_UP;
+                    }
+                    else
+                        // We've run into one of our own pieces
+                        flags -= RIGHT_UP;
+                }
+
+                // Try right down
+                if ((flags & RIGHT_DOWN) > 0)
+                {
+                    int newX = x + distance;
+                    int newY = y + distance;
+
+                    if (!InBounds(newX, newY))
+                        flags -= RIGHT_DOWN;
+                    else if (board[newX, newY] == ChessPiece.Empty)
+                        // Move to an empty space
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                    else if (_pieceColor[board[newX, newY]] != myColor)
+                    {
+                        // Capture an opponent's piece
+                        moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        flags -= RIGHT_DOWN;
+                    }
+                    else
+                        // We've run into one of our own pieces
+                        flags -= RIGHT_DOWN;
+                }
+            }
         }
 
         /// <summary>
