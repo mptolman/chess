@@ -181,7 +181,7 @@ namespace StudentAI
         {
             var offset = new int[] { 1, -1 };
 
-            //permutate through ever diagonal the piece can move (4 diagonals)
+            //permutate through every diagonal the piece can move in (4 diagonals)
             foreach(int xOffset in offset)
             {
                 foreach(int yOffset in offset)
