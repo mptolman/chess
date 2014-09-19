@@ -179,7 +179,29 @@ namespace StudentAI
         /// <param name="moves">The collection of moves we're adding to</param>
         private void AddBishopMoves(ChessBoard board, ChessColor myColor, int x, int y, IList<ChessMove> moves)
         {
+            var offset = new int[] { 1, -1 };
 
+            //permutate through ever diagonal the piece can move (4 diagonals)
+            foreach(int xOffset in offset)
+            {
+                foreach(int yOffset in offset)
+                {
+                    int newX = x + xOffset;
+                    int newY = y + yOffset;
+
+                    //continue in that diagonal until we fall out of bounds
+                    while(InBounds(newX, newY))
+                    {
+                        var pieceAtNewPos = board[newX, newY];
+
+                        //add the piece as a potential move if it is empty or if it is occupied by an opponents piece
+                        if(pieceAtNewPos == ChessPiece.Empty || _pieceColor[pieceAtNewPos] != myColor)
+                            moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+                        else //otherwise, we find that one of our own pieces is in the way, so we will stop looking in that diagonal's direction
+                            break;
+                    }
+                }
+            }
         }
 
         /// <summary>
