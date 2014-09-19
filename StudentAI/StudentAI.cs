@@ -67,11 +67,6 @@ namespace StudentAI
                 Random random = new Random();
                 int index = random.Next(allMoves.Count);
                 nextMove = allMoves[index];
-
-                // TODO : Use algorithm for selecting move
-                // 1) Random
-                // 2) Greedy
-                // 3) MiniMax
             }
 
             return nextMove;
@@ -86,14 +81,14 @@ namespace StudentAI
         /// <returns>Returns true if the move was valid</returns>
         public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
-            // TODO : Implement move validator
-            // One option is to call our move generator using their chess piece, and if this move is in our collection of valid moves, then it's valid. Otherwise, invalid.
+            // Get a list of all available moves the opponent had
+            // If we find their move in the moves we generate, then assume it's valid
+            var allOpponentMoves = GetAllMoves(boardBeforeMove, colorOfPlayerMoving);
+            foreach (var move in allOpponentMoves)
+                if (move == moveToCheck)
+                    return true;
 
-            // Special situations to consider:
-            // Be sure to check that appropriate flags are set; e.g., if opponent puts our King in check and doesn't set ChessFlag.Check, it's invalid!
-            // Opponent may not put their own King in check.
-
-            // Just return true for now, so we can perform testing before this is built.
+            // Change the below return value to "false" after our move generation is finished!
             return true;
         }
 
