@@ -12,8 +12,7 @@ namespace StudentAI
 
         public StudentAI()
         {
-            IHeuristic heuristic = new DummyHeuristic();
-            _moveGenerator = new MoveGenerator(heuristic);
+            _moveGenerator = new MoveGenerator(new DummyHeuristic());
             _searchStrategy = new RandomSearchStrategy(_moveGenerator);
         }
 

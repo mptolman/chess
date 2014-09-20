@@ -8,7 +8,7 @@ namespace StudentAI
 {
     class DummyHeuristic : IHeuristic
     {
-        public int GetMoveValue(ChessBoard boardAfterMove, ChessColor myColor)
+        public int GetMoveValue(ChessBoard boardAfterMove, ChessMove move, ChessColor myColor)
         {
             return 1;
         }

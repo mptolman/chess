@@ -579,7 +579,7 @@ namespace StudentAI
             // Get the H value for this move.
             // Don't calculate if we're just looking for Checkmate (for performance)
             if (!_searchingForCheckmate)
-                move.ValueOfMove = _heuristic.GetMoveValue(boardAfterMove, myColor);
+                move.ValueOfMove = _heuristic.GetMoveValue(boardAfterMove, move, myColor);
 
             // Now add the move
             moves.Add(move);
