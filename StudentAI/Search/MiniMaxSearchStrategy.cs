@@ -6,9 +6,9 @@ using UvsChess;
 
 namespace StudentAI
 {
-    class MiniMaxSearchStrategy : SearchStrategy
+    internal class MiniMaxSearchStrategy : SearchStrategy
     {
-        public MiniMaxSearchStrategy(MoveGenerator moveGenerator) : base(moveGenerator)
+        public MiniMaxSearchStrategy(IChessAI ai, MoveGenerator moveGenerator) : base(ai, moveGenerator)
         { }
 
         protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves)

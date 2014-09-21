@@ -6,7 +6,7 @@ using UvsChess;
 
 namespace StudentAI
 {
-    class MoveGenerator
+    internal class MoveGenerator
     {
         /// <summary>
         /// This is used in AddThisMove to calculate the H value of a move.

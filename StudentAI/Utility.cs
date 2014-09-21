@@ -6,7 +6,7 @@ using UvsChess;
 
 namespace StudentAI
 {
-    static class Utility
+    internal static class Utility
     {
         /// <summary>
         /// Convenience dictionary for determing the color of a piece.

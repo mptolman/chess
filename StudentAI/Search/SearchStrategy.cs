@@ -6,12 +6,14 @@ using UvsChess;
 
 namespace StudentAI
 {
-    abstract class SearchStrategy
+    internal abstract class SearchStrategy
     {
+        protected IChessAI _ai;
         protected MoveGenerator _moveGenerator;
 
-        public SearchStrategy(MoveGenerator moveGenerator)
+        public SearchStrategy(IChessAI ai, MoveGenerator moveGenerator)
         {
+            _ai = ai;
             _moveGenerator = moveGenerator;
         }
 

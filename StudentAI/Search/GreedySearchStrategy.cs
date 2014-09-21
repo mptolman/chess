@@ -6,14 +6,14 @@ using UvsChess;
 
 namespace StudentAI
 {
-    class GreedySearchStrategy : SearchStrategy
+    internal class GreedySearchStrategy : SearchStrategy
     {
-        public GreedySearchStrategy(MoveGenerator moveGenerator) : base(moveGenerator)
+        public GreedySearchStrategy(IChessAI ai, MoveGenerator moveGenerator) : base(ai, moveGenerator)
         { }
 
         protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves)
         {
-            throw new NotImplementedException();
+            return moves.OrderByDescending(move => move.ValueOfMove).FirstOrDefault();
         }
     }
 }

@@ -6,9 +6,9 @@ using UvsChess;
 
 namespace StudentAI
 {
-    class RandomSearchStrategy : SearchStrategy
+    internal class RandomSearchStrategy : SearchStrategy
     {
-        public RandomSearchStrategy(MoveGenerator moveGenerator) : base(moveGenerator)
+        public RandomSearchStrategy(IChessAI ai, MoveGenerator moveGenerator) : base(ai, moveGenerator)
         { }
 
         protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves)

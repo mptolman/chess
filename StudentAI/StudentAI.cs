@@ -13,7 +13,7 @@ namespace StudentAI
         public StudentAI()
         {
             _moveGenerator = new MoveGenerator(new DummyHeuristic());
-            _searchStrategy = new RandomSearchStrategy(_moveGenerator);
+            _searchStrategy = new RandomSearchStrategy(this, _moveGenerator);
         }
 
         #region IChessAI Members that are implemented by the Student

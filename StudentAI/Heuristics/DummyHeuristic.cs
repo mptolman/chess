@@ -6,7 +6,7 @@ using UvsChess;
 
 namespace StudentAI
 {
-    class DummyHeuristic : IHeuristic
+    internal class DummyHeuristic : IHeuristic
     {
         public int GetMoveValue(ChessBoard boardAfterMove, ChessMove move, ChessColor myColor)
         {
