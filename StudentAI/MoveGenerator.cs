@@ -41,7 +41,7 @@ namespace StudentAI
                     var chessPiece = board[x, y];
 
                     if (chessPiece == ChessPiece.Empty) continue; // Ignore empty tiles
-                    if (Utility.PieceColor[chessPiece] != myColor) continue; // Ignore opponent's pieces
+                    if (Utility.PieceColor(chessPiece) != myColor) continue; // Ignore opponent's pieces
 
                     AddMovesForThisPiece(board, myColor, chessPiece, x, y, allMoves);
                 }
@@ -124,7 +124,7 @@ namespace StudentAI
                         else
                         {
                             //if we've hit an opponent's piece then add that move
-                            if (Utility.PieceColor[pieceAtNewPos] != myColor)
+                            if (Utility.PieceColor(pieceAtNewPos) != myColor)
                                 AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
                             //we've hit another piece, so stop looking in this direction
                             break;
@@ -145,15 +145,15 @@ namespace StudentAI
         /// <param name="moves">The collection of moves we're adding to</param>
         private void AddKingMoves(ChessBoard board, ChessColor myColor, int x, int y, IList<ChessMove> moves)
         {
-            int forwardDirection = Utility.ForwardDirection[myColor];
-            int rightDirection = Utility.RightDirection[myColor];
+            int forwardDirection = Utility.ForwardDirection(myColor);
+            int rightDirection = Utility.RightDirection(myColor);
 
             Action<int, int> tryThisDirection = (int newX, int newY) =>
             {
                 if (!Utility.InBounds(newX, newY))
                     return;
 
-                if (board[newX, newY] == ChessPiece.Empty || Utility.PieceColor[board[newX, newY]] != myColor)
+                if (board[newX, newY] == ChessPiece.Empty || Utility.PieceColor(board[newX, newY]) != myColor)
                     AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
             };
 
@@ -205,7 +205,7 @@ namespace StudentAI
                         continue;
 
                     var pieceAtNewPos = board[newX, newY];
-                    if (pieceAtNewPos == ChessPiece.Empty || Utility.PieceColor[pieceAtNewPos] != myColor)
+                    if (pieceAtNewPos == ChessPiece.Empty || Utility.PieceColor(pieceAtNewPos) != myColor)
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
                 }
             }
@@ -222,7 +222,7 @@ namespace StudentAI
                         continue;
 
                     var pieceAtNewPos = board[newX, newY];
-                    if (pieceAtNewPos == ChessPiece.Empty || Utility.PieceColor[pieceAtNewPos] != myColor)
+                    if (pieceAtNewPos == ChessPiece.Empty || Utility.PieceColor(pieceAtNewPos) != myColor)
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
                 }
             }
@@ -236,7 +236,7 @@ namespace StudentAI
         /// <param name="moves">The collection of moves we're adding to</param>
         private void AddPawnMoves(ChessBoard board, ChessColor myColor, int x, int y, IList<ChessMove> moves)
         {
-            int forwardDirection = Utility.ForwardDirection[myColor];
+            int forwardDirection = Utility.ForwardDirection(myColor);
             int startingRow = myColor == ChessColor.Black ? 1 : ChessBoard.NumberOfRows - 2;
 
             int newX, newY;
@@ -257,7 +257,7 @@ namespace StudentAI
 
             if (Utility.InBounds(newX, newY) &&
                 board[newX, newY] != ChessPiece.Empty &&
-                Utility.PieceColor[board[newX, newY]] != myColor)
+                Utility.PieceColor(board[newX, newY]) != myColor)
                 AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
 
             // Diagonal attack (forward-right)
@@ -266,7 +266,7 @@ namespace StudentAI
 
             if (Utility.InBounds(newX, newY) &&
                 board[newX, newY] != ChessPiece.Empty &&
-                Utility.PieceColor[board[newX, newY]] != myColor)
+                Utility.PieceColor(board[newX, newY]) != myColor)
                 AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
         }
 
@@ -303,7 +303,7 @@ namespace StudentAI
                     else if (board[newX, newY] == ChessPiece.Empty)
                         // Move to an empty space
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
-                    else if (Utility.PieceColor[board[newX, newY]] != myColor)
+                    else if (Utility.PieceColor(board[newX, newY]) != myColor)
                     {
                         // Capture an opponent's piece
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
@@ -325,7 +325,7 @@ namespace StudentAI
                     else if (board[newX, newY] == ChessPiece.Empty)
                         // Move to an empty space
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
-                    else if (Utility.PieceColor[board[newX, newY]] != myColor)
+                    else if (Utility.PieceColor(board[newX, newY]) != myColor)
                     {
                         // Capture an opponent's piece
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
@@ -347,7 +347,7 @@ namespace StudentAI
                     else if (board[newX, newY] == ChessPiece.Empty)
                         // Move to an empty space
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
-                    else if (Utility.PieceColor[board[newX, newY]] != myColor)
+                    else if (Utility.PieceColor(board[newX, newY]) != myColor)
                     {
                         // Capture an opponent's piece
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
@@ -369,7 +369,7 @@ namespace StudentAI
                     else if (board[newX, newY] == ChessPiece.Empty)
                         // Move to an empty space
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
-                    else if (Utility.PieceColor[board[newX, newY]] != myColor)
+                    else if (Utility.PieceColor(board[newX, newY]) != myColor)
                     {
                         // Capture an opponent's piece
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
@@ -391,7 +391,7 @@ namespace StudentAI
                     else if (board[newX, newY] == ChessPiece.Empty)
                         // Move to an empty space
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
-                    else if (Utility.PieceColor[board[newX, newY]] != myColor)
+                    else if (Utility.PieceColor(board[newX, newY]) != myColor)
                     {
                         // Capture an opponent's piece
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
@@ -413,7 +413,7 @@ namespace StudentAI
                     else if (board[newX, newY] == ChessPiece.Empty)
                         // Move to an empty space
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
-                    else if (Utility.PieceColor[board[newX, newY]] != myColor)
+                    else if (Utility.PieceColor(board[newX, newY]) != myColor)
                     {
                         // Capture an opponent's piece
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
@@ -435,7 +435,7 @@ namespace StudentAI
                     else if (board[newX, newY] == ChessPiece.Empty)
                         // Move to an empty space
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
-                    else if (Utility.PieceColor[board[newX, newY]] != myColor)
+                    else if (Utility.PieceColor(board[newX, newY]) != myColor)
                     {
                         // Capture an opponent's piece
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
@@ -457,7 +457,7 @@ namespace StudentAI
                     else if (board[newX, newY] == ChessPiece.Empty)
                         // Move to an empty space
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
-                    else if (Utility.PieceColor[board[newX, newY]] != myColor)
+                    else if (Utility.PieceColor(board[newX, newY]) != myColor)
                     {
                         // Capture an opponent's piece
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
@@ -502,7 +502,7 @@ namespace StudentAI
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
                     else
                     {
-                        if (Utility.PieceColor[board[newX, newY]] != myColor)
+                        if (Utility.PieceColor(board[newX, newY]) != myColor)
                             // Capture an opponent's piece
                             AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
 
@@ -525,7 +525,7 @@ namespace StudentAI
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
                     else
                     {
-                        if (Utility.PieceColor[board[newX, newY]] != myColor)
+                        if (Utility.PieceColor(board[newX, newY]) != myColor)
                             // Capture an opponent's piece
                             AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
 
@@ -548,7 +548,7 @@ namespace StudentAI
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
                     else
                     {
-                        if (Utility.PieceColor[board[newX, newY]] != myColor)
+                        if (Utility.PieceColor(board[newX, newY]) != myColor)
                             // Capture an opponent's piece
                             AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
 
@@ -571,7 +571,7 @@ namespace StudentAI
                         AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
                     else
                     {
-                        if (Utility.PieceColor[board[newX, newY]] != myColor)
+                        if (Utility.PieceColor(board[newX, newY]) != myColor)
                             // Capture an opponent's piece
                             AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
 

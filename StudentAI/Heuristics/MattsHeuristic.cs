@@ -66,7 +66,7 @@ namespace StudentAI.Heuristics
                     if (piece == ChessPiece.Empty)
                         continue;
 
-                    if (Utility.PieceColor[piece] == myColor)
+                    if (Utility.PieceColor(piece) == myColor)
                         ++myCount[piece];
                     else
                         ++opCount[piece];

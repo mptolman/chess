@@ -9,50 +9,56 @@ namespace StudentAI
     internal static class Utility
     {
         /// <summary>
-        /// Convenience dictionary for determing the color of a piece.
-        /// We could also use a lookup method, but I thought a dictionary would be slightly more efficient.
+        /// Convenience function to get the opposite color
         /// </summary>
-        public static IDictionary<ChessPiece, ChessColor> PieceColor = new Dictionary<ChessPiece, ChessColor>
+        /// <param name="color">Color we want the opposite of</param>
+        /// <returns>Returns the opposite color</returns>
+        public static ChessColor OppColor(ChessColor color)
         {
-            {ChessPiece.BlackBishop,    ChessColor.Black},
-            {ChessPiece.BlackKing,      ChessColor.Black},
-            {ChessPiece.BlackKnight,    ChessColor.Black},
-            {ChessPiece.BlackPawn,      ChessColor.Black},
-            {ChessPiece.BlackQueen,     ChessColor.Black},
-            {ChessPiece.BlackRook,      ChessColor.Black},
-            {ChessPiece.WhiteBishop,    ChessColor.White},
-            {ChessPiece.WhiteKing,      ChessColor.White},
-            {ChessPiece.WhiteKnight,    ChessColor.White},
-            {ChessPiece.WhitePawn,      ChessColor.White},
-            {ChessPiece.WhiteQueen,     ChessColor.White},
-            {ChessPiece.WhiteRook,      ChessColor.White}
-        };
+            return color == ChessColor.Black ? ChessColor.White : ChessColor.Black;
+        }
 
         /// <summary>
-        /// This helps us calculate forward/backward movements without having to branch based on color
-        /// For example, to get the Y-coordinate for moving forward N spaces:
-        ///     location.Y + ForwardDirection[myColor] * N
-        /// And to move backwards N spaces:
-        ///     location.Y - ForwardDirection[myColor] * N
+        /// Get the color of a piece.
+        /// The empty piece shouldn't be passed in, but white will be returned if it is.
         /// </summary>
-        public static IDictionary<ChessColor, int> ForwardDirection = new Dictionary<ChessColor, int>
+        /// <param name="piece">Piece whose color you want</param>
+        /// <returns>The color of the piece</returns>
+        public static ChessColor PieceColor(ChessPiece piece)
         {
-            {ChessColor.Black, 1},
-            {ChessColor.White, -1}
-        };
+            switch (piece)
+            {
+                case ChessPiece.BlackBishop:
+                case ChessPiece.BlackKing:
+                case ChessPiece.BlackKnight:
+                case ChessPiece.BlackPawn:
+                case ChessPiece.BlackQueen:
+                case ChessPiece.BlackRook:
+                    return ChessColor.Black;
+                default:
+                    return ChessColor.White;
+            }
+        }
 
         /// <summary>
-        /// This helps calculate right/left movements just like the forward/backward movements
-        /// To get the X-coordinate for moving right N spaces:
-        ///     location.X + RightDirection[myColor] * N
-        /// To get the X-coordinate for moving left N spaces:
-        ///     location.X - RightDirection[myColor] * N
+        /// Get the multiplier for a color's forward direction
         /// </summary>
-        public static IDictionary<ChessColor, int> RightDirection = new Dictionary<ChessColor, int>
+        /// <param name="color">Color whose forward direction you want</param>
+        /// <returns>Returns 1 to advance down the grid (black); -1 to advance up the grid (white)</returns>
+        public static int ForwardDirection(ChessColor color)
         {
-	        {ChessColor.Black, -1},
-	        {ChessColor.White, 1}
-        };
+            return color == ChessColor.Black ? 1 : -1;
+        }
+
+        /// <summary>
+        /// Get the multiplier for a color's right direction
+        /// </summary>
+        /// <param name="color">Color whose right direction you want</param>
+        /// <returns>Returns -1 to advance right from black's perspective; 1 for white's perspective</returns>
+        public static int RightDirection(ChessColor color)
+        {
+            return color == ChessColor.Black ? -1 : 1;
+        }
 
         /// <summary>
         /// Check if coordinates are on the board
@@ -111,7 +117,7 @@ namespace StudentAI
                 if ((flags & FORWARD) > 0)
                 {
                     int newX = location.X;
-                    int newY = location.Y + distance * ForwardDirection[myColor];
+                    int newY = location.Y + distance * ForwardDirection(myColor);
 
                     if (!InBounds(newX, newY))
                     {
@@ -123,7 +129,7 @@ namespace StudentAI
                         var pieceAtPos = board[newX, newY];
                         if (pieceAtPos != ChessPiece.Empty)
                         {
-                            if (PieceColor[pieceAtPos] != myColor)
+                            if (PieceColor(pieceAtPos) != myColor)
                             {
                                 switch (pieceAtPos)
                                 {
@@ -153,7 +159,7 @@ namespace StudentAI
                 if ((flags & BACK) > 0)
                 {
                     int newX = location.X;
-                    int newY = location.Y - distance * ForwardDirection[myColor];
+                    int newY = location.Y - distance * ForwardDirection(myColor);
 
                     if (!InBounds(newX, newY))
                     {
@@ -165,7 +171,7 @@ namespace StudentAI
                         var pieceAtPos = board[newX, newY];
                         if (pieceAtPos != ChessPiece.Empty)
                         {
-                            if (PieceColor[pieceAtPos] != myColor)
+                            if (PieceColor(pieceAtPos) != myColor)
                             {
                                 switch (pieceAtPos)
                                 {
@@ -194,7 +200,7 @@ namespace StudentAI
                 //------------------------------------
                 if ((flags & LEFT) > 0)
                 {
-                    int newX = location.X - distance * RightDirection[myColor];
+                    int newX = location.X - distance * RightDirection(myColor);
                     int newY = location.Y;
 
                     if (!InBounds(newX, newY))
@@ -207,7 +213,7 @@ namespace StudentAI
                         var pieceAtPos = board[newX, newY];
                         if (pieceAtPos != ChessPiece.Empty)
                         {
-                            if (PieceColor[pieceAtPos] != myColor)
+                            if (PieceColor(pieceAtPos) != myColor)
                             {
                                 switch (pieceAtPos)
                                 {
@@ -236,7 +242,7 @@ namespace StudentAI
                 //------------------------------------
                 if ((flags & RIGHT) > 0)
                 {
-                    int newX = location.X + distance * RightDirection[myColor];
+                    int newX = location.X + distance * RightDirection(myColor);
                     int newY = location.Y;
 
                     if (!InBounds(newX, newY))
@@ -249,7 +255,7 @@ namespace StudentAI
                         var pieceAtPos = board[newX, newY];
                         if (pieceAtPos != ChessPiece.Empty)
                         {
-                            if (PieceColor[pieceAtPos] != myColor)
+                            if (PieceColor(pieceAtPos) != myColor)
                             {
                                 switch (pieceAtPos)
                                 {
@@ -278,8 +284,8 @@ namespace StudentAI
                 //------------------------------------
                 if ((flags & FORWARD_LEFT) > 0)
                 {
-                    int newX = location.X - distance * RightDirection[myColor];
-                    int newY = location.Y + distance * ForwardDirection[myColor];
+                    int newX = location.X - distance * RightDirection(myColor);
+                    int newY = location.Y + distance * ForwardDirection(myColor);
 
                     if (!InBounds(newX, newY))
                     {
@@ -291,7 +297,7 @@ namespace StudentAI
                         var pieceAtPos = board[newX, newY];
                         if (pieceAtPos != ChessPiece.Empty)
                         {
-                            if (PieceColor[pieceAtPos] != myColor)
+                            if (PieceColor(pieceAtPos) != myColor)
                             {
                                 switch (pieceAtPos)
                                 {
@@ -322,8 +328,8 @@ namespace StudentAI
                 //------------------------------------
                 if ((flags & FORWARD_RIGHT) > 0)
                 {
-                    int newX = location.X + distance * RightDirection[myColor];
-                    int newY = location.Y + distance * ForwardDirection[myColor];
+                    int newX = location.X + distance * RightDirection(myColor);
+                    int newY = location.Y + distance * ForwardDirection(myColor);
 
                     if (!InBounds(newX, newY))
                     {
@@ -335,7 +341,7 @@ namespace StudentAI
                         var pieceAtPos = board[newX, newY];
                         if (pieceAtPos != ChessPiece.Empty)
                         {
-                            if (PieceColor[pieceAtPos] != myColor)
+                            if (PieceColor(pieceAtPos) != myColor)
                             {
                                 switch (pieceAtPos)
                                 {
@@ -366,8 +372,8 @@ namespace StudentAI
                 //------------------------------------
                 if ((flags & BACK_LEFT) > 0)
                 {
-                    int newX = location.X - distance * RightDirection[myColor];
-                    int newY = location.Y - distance * ForwardDirection[myColor];
+                    int newX = location.X - distance * RightDirection(myColor);
+                    int newY = location.Y - distance * ForwardDirection(myColor);
 
                     if (!InBounds(newX, newY))
                     {
@@ -379,7 +385,7 @@ namespace StudentAI
                         var pieceAtPos = board[newX, newY];
                         if (pieceAtPos != ChessPiece.Empty)
                         {
-                            if (PieceColor[pieceAtPos] != myColor)
+                            if (PieceColor(pieceAtPos) != myColor)
                             {
                                 switch (pieceAtPos)
                                 {
@@ -408,8 +414,8 @@ namespace StudentAI
                 //------------------------------------
                 if ((flags & BACK_RIGHT) > 0)
                 {
-                    int newX = location.X + distance * RightDirection[myColor];
-                    int newY = location.Y - distance * ForwardDirection[myColor];
+                    int newX = location.X + distance * RightDirection(myColor);
+                    int newY = location.Y - distance * ForwardDirection(myColor);
 
                     if (!InBounds(newX, newY))
                     {
@@ -421,7 +427,7 @@ namespace StudentAI
                         var pieceAtPos = board[newX, newY];
                         if (pieceAtPos != ChessPiece.Empty)
                         {
-                            if (PieceColor[pieceAtPos] != myColor)
+                            if (PieceColor(pieceAtPos) != myColor)
                             {
                                 switch (pieceAtPos)
                                 {
@@ -467,7 +473,7 @@ namespace StudentAI
                     var piece = board[newX, newY];
 
                     // Ignore empty space and our own pieces
-                    if (piece == ChessPiece.Empty || PieceColor[piece] == myColor)
+                    if (piece == ChessPiece.Empty || PieceColor(piece) == myColor)
                         continue;
 
                     switch (piece)
@@ -496,7 +502,7 @@ namespace StudentAI
                     var piece = board[newX, newY];
 
                     // Ignore empty space and our own pieces
-                    if (piece == ChessPiece.Empty || PieceColor[piece] == myColor)
+                    if (piece == ChessPiece.Empty || PieceColor(piece) == myColor)
                         continue;
 
                     switch (piece)
@@ -552,16 +558,6 @@ namespace StudentAI
             boardAfterMove.MakeMove(move);
 
             return boardAfterMove;
-        }
-
-        /// <summary>
-        /// Convenience function to get the opposite color
-        /// </summary>
-        /// <param name="color">Color we want the opposite of</param>
-        /// <returns>Returns the opposite color</returns>
-        public static ChessColor OppColor(ChessColor color)
-        {
-            return color == ChessColor.Black ? ChessColor.White : ChessColor.Black;
         }
     }
 }
