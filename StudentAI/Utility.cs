@@ -48,7 +48,7 @@ namespace StudentAI
         /// To get the X-coordinate for moving left N spaces:
         ///     location.X - RightDirection[myColor] * N
         /// </summary>
-        private static IDictionary<ChessColor, int> RightDirection = new Dictionary<ChessColor, int>
+        public static IDictionary<ChessColor, int> RightDirection = new Dictionary<ChessColor, int>
         {
 	        {ChessColor.Black, -1},
 	        {ChessColor.White, 1}
