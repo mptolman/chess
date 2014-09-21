@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Heuristics\DummyHeuristic.cs" />
+    <Compile Include="Heuristics\MattsHeuristic.cs" />
     <Compile Include="Search\GreedySearchStrategy.cs" />
     <Compile Include="Heuristics\IHeuristic.cs" />
     <Compile Include="Search\MiniMaxSearchStrategy.cs" />

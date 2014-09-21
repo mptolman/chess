@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UvsChess;
+using StudentAI.Heuristics;
+using StudentAI.Search;
 
 namespace StudentAI
 {
@@ -12,8 +14,8 @@ namespace StudentAI
 
         public StudentAI()
         {
-            _moveGenerator = new MoveGenerator(new DummyHeuristic());
-            _searchStrategy = new RandomSearchStrategy(this, _moveGenerator);
+            _moveGenerator = new MoveGenerator(new MattsHeuristic());
+            _searchStrategy = new GreedySearchStrategy(this, _moveGenerator);
         }
 
         #region IChessAI Members that are implemented by the Student

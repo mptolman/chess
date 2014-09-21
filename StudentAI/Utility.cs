@@ -194,7 +194,7 @@ namespace StudentAI
                 //------------------------------------
                 if ((flags & LEFT) > 0)
                 {
-                    int newX = location.X - distance;
+                    int newX = location.X - distance * RightDirection[myColor];
                     int newY = location.Y;
 
                     if (!InBounds(newX, newY))
@@ -236,7 +236,7 @@ namespace StudentAI
                 //------------------------------------
                 if ((flags & RIGHT) > 0)
                 {
-                    int newX = location.X + distance;
+                    int newX = location.X + distance * RightDirection[myColor];
                     int newY = location.Y;
 
                     if (!InBounds(newX, newY))
@@ -278,7 +278,7 @@ namespace StudentAI
                 //------------------------------------
                 if ((flags & FORWARD_LEFT) > 0)
                 {
-                    int newX = location.X - distance;
+                    int newX = location.X - distance * RightDirection[myColor];
                     int newY = location.Y + distance * ForwardDirection[myColor];
 
                     if (!InBounds(newX, newY))
@@ -322,7 +322,7 @@ namespace StudentAI
                 //------------------------------------
                 if ((flags & FORWARD_RIGHT) > 0)
                 {
-                    int newX = location.X + distance;
+                    int newX = location.X + distance * RightDirection[myColor];
                     int newY = location.Y + distance * ForwardDirection[myColor];
 
                     if (!InBounds(newX, newY))
@@ -366,7 +366,7 @@ namespace StudentAI
                 //------------------------------------
                 if ((flags & BACK_LEFT) > 0)
                 {
-                    int newX = location.X - distance;
+                    int newX = location.X - distance * RightDirection[myColor];
                     int newY = location.Y - distance * ForwardDirection[myColor];
 
                     if (!InBounds(newX, newY))
@@ -408,7 +408,7 @@ namespace StudentAI
                 //------------------------------------
                 if ((flags & BACK_RIGHT) > 0)
                 {
-                    int newX = location.X + distance;
+                    int newX = location.X + distance * RightDirection[myColor];
                     int newY = location.Y - distance * ForwardDirection[myColor];
 
                     if (!InBounds(newX, newY))

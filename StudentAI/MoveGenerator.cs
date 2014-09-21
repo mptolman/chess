@@ -148,69 +148,38 @@ namespace StudentAI
             int forwardDirection = Utility.ForwardDirection[myColor];
             int rightDirection = Utility.RightDirection[myColor];
 
-            int newX, newY;
-
-            // Move forward 1 space if it's empty
-            if (Utility.InBounds(x, y + forwardDirection) && board[x, y + forwardDirection] == ChessPiece.Empty)
+            Action<int, int> tryThisDirection = (int newX, int newY) =>
             {
-                AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y + forwardDirection)), moves);
-            }
+                if (!Utility.InBounds(newX, newY))
+                    return;
 
-            // Move backward 1 space if it's empty
-            if (Utility.InBounds(x, y - forwardDirection) && board[x, y - forwardDirection] == ChessPiece.Empty)
-            {
-                AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y - forwardDirection)), moves);
-            }
+                if (board[newX, newY] == ChessPiece.Empty || Utility.PieceColor[board[newX, newY]] != myColor)
+                    AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
+            };
 
-            // Move right 1 space if it's empty
-            if (Utility.InBounds(x + rightDirection, y) && board[x + rightDirection, y] == ChessPiece.Empty)
-            {
-                AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(x + rightDirection, y)), moves);
-            }
+            // Try forward
+            tryThisDirection(x, y + forwardDirection);
 
-            // Move left 1 space if it's empty
-            if (Utility.InBounds(x - rightDirection, y) && board[x - rightDirection, y] == ChessPiece.Empty)
-            {
-                AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(x - rightDirection, y)), moves);
-            }
+            // Try backward
+            tryThisDirection(x, y - forwardDirection);
 
-            // Attack forward
-            newX = x;
-            newY = y + forwardDirection;
+            // Try left
+            tryThisDirection(x - rightDirection, y);
 
-            if (Utility.InBounds(newX, newY) && board[newX, newY] != ChessPiece.Empty &&
-                Utility.PieceColor[board[newX, newY]] != myColor)
-            {
-                AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
-            }
+            // Try right
+            tryThisDirection(x + rightDirection, y);
 
-            // Attack backward
-            newY = y - forwardDirection;
+            // Try forward-left
+            tryThisDirection(x - rightDirection, y + forwardDirection);
 
-            if (Utility.InBounds(newX, newY) && board[newX, newY] != ChessPiece.Empty &&
-                Utility.PieceColor[board[newX, newY]] != myColor)
-            {
-                AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
-            }
+            // Try forward-right
+            tryThisDirection(x + rightDirection, y + forwardDirection);
 
-            // Attack right
-            newX = x + rightDirection;
-            newY = y;
+            // Try back-left
+            tryThisDirection(x - rightDirection, y - forwardDirection);
 
-            if (Utility.InBounds(newX, newY) && board[newX, newY] != ChessPiece.Empty &&
-                Utility.PieceColor[board[newX, newY]] != myColor)
-            {
-                AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
-            }
-
-            // Attack left
-            newX = x - rightDirection;
-
-            if (Utility.InBounds(newX, newY) && board[newX, newY] != ChessPiece.Empty &&
-                Utility.PieceColor[board[newX, newY]] != myColor)
-            {
-                AddThisMove(board, myColor, new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)), moves);
-            }
+            // Try back-right
+            tryThisDirection(x + rightDirection, y - forwardDirection);
         }
 
         /// <summary>
@@ -627,7 +596,7 @@ namespace StudentAI
             // Otherwise, we'll end up in an infinite loop of recursion.
             if (!_searchingForCheckmate && Utility.InCheck(boardAfterMove, oppColor))
             {
-                // Avoid recursion
+                // Avoid infinite recursion
                 _searchingForCheckmate = true;
 
                 var oppMoves = GetAllMoves(boardAfterMove, oppColor);

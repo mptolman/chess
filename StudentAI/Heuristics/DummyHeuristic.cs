@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UvsChess;
 
-namespace StudentAI
+namespace StudentAI.Heuristics
 {
     internal class DummyHeuristic : IHeuristic
     {
