@@ -42,6 +42,19 @@ namespace StudentAI
         };
 
         /// <summary>
+        /// This helps calculate right/left movements just like the forward/backward movements
+        /// To get the X-coordinate for moving right N spaces:
+        ///     location.X + RightDirection[myColor] * N
+        /// To get the X-coordinate for moving left N spaces:
+        ///     location.X - RightDirection[myColor] * N
+        /// </summary>
+        private static IDictionary<ChessColor, int> RightDirection = new Dictionary<ChessColor, int>
+        {
+	        {ChessColor.Black, -1},
+	        {ChessColor.White, 1}
+        };
+
+        /// <summary>
         /// Check if coordinates are on the board
         /// </summary>
         /// <param name="x">x-coordinate</param>

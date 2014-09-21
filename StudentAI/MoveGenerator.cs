@@ -145,7 +145,72 @@ namespace StudentAI
         /// <param name="moves">The collection of moves we're adding to</param>
         private void AddKingMoves(ChessBoard board, ChessColor myColor, int x, int y, IList<ChessMove> moves)
         {
+            int forwardDirection = Utility.ForwardDirection[myColor];
+            int rightDirection = Utility.RightDirection[myColor];
 
+            int newX, newY;
+
+            // Move forward 1 space if it's empty
+            if (Utility.InBounds(x, y + forwardDirection) && board[x, y + forwardDirection] == ChessPiece.Empty)
+            {
+                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y + forwardDirection)));
+            }
+
+            // Move backward 1 space if it's empty
+            if (Utility.InBounds(x, y - forwardDirection) && board[x, y - forwardDirection] == ChessPiece.Empty)
+            {
+                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x, y - forwardDirection)));
+            }
+
+            // Move right 1 space if it's empty
+            if (Utility.InBounds(x + rightDirection, y) && board[x + rightDirection, y] == ChessPiece.Empty)
+            {
+                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x + rightDirection, y)));
+            }
+
+            // Move left 1 space if it's empty
+            if (Utility.InBounds(x - rightDirection, y) && board[x - rightDirection, y] == ChessPiece.Empty)
+            {
+                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(x - rightDirection, y)));
+            }
+
+            // Attack forward
+            newX = x;
+            newY = y + forwardDirection;
+
+            if (Utility.InBounds(newX, newY) && board[newX, newY] != ChessPiece.Empty &&
+                Utility.PieceColor[board[newX, newY]] != myColor)
+            {
+                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+            }
+
+            // Attack backward
+            newY = y - forwardDirection;
+
+            if (Utility.InBounds(newX, newY) && board[newX, newY] != ChessPiece.Empty &&
+                Utility.PieceColor[board[newX, newY]] != myColor)
+            {
+                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+            }
+
+            // Attack right
+            newX = x + rightDirection;
+            newY = y;
+
+            if (Utility.InBounds(newX, newY) && board[newX, newY] != ChessPiece.Empty &&
+                Utility.PieceColor[board[newX, newY]] != myColor)
+            {
+                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+            }
+
+            // Attack left
+            newX = x - rightDirection;
+
+            if (Utility.InBounds(newX, newY) && board[newX, newY] != ChessPiece.Empty &&
+                Utility.PieceColor[board[newX, newY]] != myColor)
+            {
+                moves.Add(new ChessMove(new ChessLocation(x, y), new ChessLocation(newX, newY)));
+            }
         }
 
         /// <summary>
