@@ -9,13 +9,11 @@ namespace StudentAI
 {
     public class StudentAI : IChessAI
     {
-        private MoveGenerator _moveGenerator;
         private SearchStrategy _searchStrategy;
 
         public StudentAI()
         {
-            _moveGenerator = new MoveGenerator(new MattsHeuristic());
-            _searchStrategy = new GreedySearchStrategy(this, _moveGenerator);
+            _searchStrategy = new GreedySearchStrategy(this, new MattsHeuristic());
         }
 
         #region IChessAI Members that are implemented by the Student
@@ -55,7 +53,7 @@ namespace StudentAI
         {
             // Get a list of all available moves the opponent had
             // If we find their move in the moves we generate, then assume it's valid
-            var allOpponentMoves = _moveGenerator.GetAllMoves(boardBeforeMove, colorOfPlayerMoving);
+            var allOpponentMoves = _searchStrategy.GetAllMoves(boardBeforeMove, colorOfPlayerMoving);
             foreach (var move in allOpponentMoves)
                 if (move == moveToCheck)
                     return true;

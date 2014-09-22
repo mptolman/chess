@@ -54,7 +54,6 @@
     <Compile Include="Search\GreedySearchStrategy.cs" />
     <Compile Include="Heuristics\IHeuristic.cs" />
     <Compile Include="Search\MiniMaxSearchStrategy.cs" />
-    <Compile Include="MoveGenerator.cs" />
     <Compile Include="Search\RandomSearchStrategy.cs" />
     <Compile Include="Search\SearchStrategy.cs" />
     <Compile Include="StudentAI.cs" />

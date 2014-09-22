@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UvsChess;
+using StudentAI.Heuristics;
 
 namespace StudentAI.Search
 {
     internal class RandomSearchStrategy : SearchStrategy
     {
-        public RandomSearchStrategy(IChessAI ai, MoveGenerator moveGenerator) : base(ai, moveGenerator)
+        public RandomSearchStrategy(IChessAI ai, IHeuristic heuristic) : base(ai, heuristic)
         { }
 
         protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves)
