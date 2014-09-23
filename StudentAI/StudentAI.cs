@@ -13,7 +13,7 @@ namespace StudentAI
 
         public StudentAI()
         {
-            _searchStrategy = new GreedySearchStrategy(this, new MattsHeuristic());
+            _searchStrategy = new GreedySearchStrategy(this, new PositionalHeuristic());
         }
 
         #region IChessAI Members that are implemented by the Student
