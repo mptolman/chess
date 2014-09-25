@@ -521,6 +521,23 @@ namespace StudentAI
         }
 
         /// <summary>
+        /// Determine if a piece is protected in this location
+        /// </summary>
+        /// <param name="board">Board we are evaluating</param>
+        /// <param name="myColor">Color we are evaluating to see if its piece can be captured</param>
+        /// <param name="location">Location of the piece we are evaluating</param>
+        /// <returns>Returns true if this piece is protected; else false</returns>
+        public static bool IsProtected(ChessBoard board, ChessColor myColor, ChessLocation location)
+        {
+            ChessColor oppositeColor = new ChessColor();
+            if (myColor == ChessColor.White)
+                oppositeColor = ChessColor.Black;
+            else
+                oppositeColor = ChessColor.White;
+            return CanBeCaptured(board, oppositeColor, location);
+        }
+
+        /// <summary>
         /// Find the location of a specific piece on the board
         /// </summary>
         /// <param name="board">Board we are evaluating</param>

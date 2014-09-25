@@ -10,6 +10,7 @@ namespace StudentAI.Search
     internal abstract class SearchStrategy
     {
         private IHeuristic _heuristic;
+        private Queue<ChessMove> recentMoves;
 
         /// <summary>
         /// This is used in AddThisMove to avoid infinite recursion.
@@ -28,12 +29,13 @@ namespace StudentAI.Search
         /// <param name="myColor">Which color we're selecting a move for</param>
         /// <param name="moves">The list of available moves to choose from</param>
         /// <returns>ChessMove to make</returns>
-        protected abstract ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves);
+        protected abstract ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves, Queue<ChessMove> recentMoves);
         
         public SearchStrategy(IChessAI ai, IHeuristic heuristic)
         {
             _ai = ai;
             _heuristic = heuristic;
+            recentMoves = new Queue<ChessMove>();
         }
 
         /// <summary>
@@ -60,7 +62,10 @@ namespace StudentAI.Search
             }
             else
             {
-                nextMove = SelectFromAvailableMoves(board, myColor, allMoves);   
+                nextMove = SelectFromAvailableMoves(board, myColor, allMoves, recentMoves);
+                recentMoves.Enqueue(nextMove);
+                if (recentMoves.Count == 5)
+                    recentMoves.Clear();
             }
 
             return nextMove;

@@ -12,7 +12,7 @@ namespace StudentAI.Search
         public RandomSearchStrategy(IChessAI ai, IHeuristic heuristic) : base(ai, heuristic)
         { }
 
-        protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves)
+        protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves, Queue<ChessMove> recentMoves)
         {
             Random random = new Random();
             int index = random.Next(moves.Count);

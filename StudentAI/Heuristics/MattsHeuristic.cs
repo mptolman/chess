@@ -14,7 +14,10 @@ namespace StudentAI.Heuristics
             if (move.Flag == ChessFlag.Checkmate)
                 return int.MaxValue;
 
-            return MaterialValue(boardAfterMove, myColor);
+            int moveValue = MaterialValue(boardAfterMove, myColor);
+            if (Utility.IsProtected(boardAfterMove, myColor, move.To) && boardAfterMove[move.To] != ChessPiece.WhiteKing && boardAfterMove[move.To] != ChessPiece.BlackKing)
+                moveValue += PieceValue(boardAfterMove[move.To]) * 2 / 3;
+            return moveValue;
         }
 
         private int MaterialValue(ChessBoard boardAfterMove, ChessColor myColor)

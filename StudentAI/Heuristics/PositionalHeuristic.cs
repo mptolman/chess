@@ -14,7 +14,14 @@ namespace StudentAI.Heuristics
             if (move.Flag == ChessFlag.Checkmate)
                 return int.MaxValue;
 
-            return PositionalValue(boardAfterMove, myColor) + MaterialValue(boardAfterMove, myColor);
+            int moveValue = PositionalValue(boardAfterMove, myColor) + MaterialValue(boardAfterMove, myColor);
+            if (Utility.IsProtected(boardAfterMove, myColor, move.To) && boardAfterMove[move.To] != ChessPiece.WhiteKing && boardAfterMove[move.To] != ChessPiece.BlackKing)
+            {
+                moveValue += PieceValue(boardAfterMove[move.To]) * 2 / 3;
+                if (Utility.CanBeCaptured(boardAfterMove, myColor, move.To))
+                    moveValue *= 2;
+            }
+            return moveValue;
         }
 
         private int PositionalValue(ChessBoard boardAfterMove, ChessColor myColor)
@@ -284,16 +291,16 @@ namespace StudentAI.Heuristics
                 case ChessPiece.WhiteBishop:
                 case ChessPiece.BlackKnight:
                 case ChessPiece.WhiteKnight:
-                    return 320;
+                    return 300;
                 case ChessPiece.BlackRook:
                 case ChessPiece.WhiteRook:
                     return 500;
                 case ChessPiece.BlackQueen:
                 case ChessPiece.WhiteQueen:
-                    return 975;
+                    return 900;
                 case ChessPiece.BlackKing:
                 case ChessPiece.WhiteKing:
-                    return 232767;
+                    return 1000;
                 default:
                     return 0;
             }

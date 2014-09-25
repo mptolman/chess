@@ -12,10 +12,13 @@ namespace StudentAI.Search
         public GreedySearchStrategy(IChessAI ai, IHeuristic heuristic) : base(ai, heuristic)
         { }
 
-        protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves)
+        protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves, Queue<ChessMove> recentMoves)
         {
             // Find our max value
             var maxValue = moves.Max(move => move.ValueOfMove);
+
+            // Build a sorted list of moves
+            var movesInAscendingOrder = moves.OrderByDescending(move => move.ValueOfMove).ToList();
 
             // Build a list of moves with the max value
             var movesWithMaxValue = moves.Where(move => move.ValueOfMove == maxValue).ToList();
@@ -24,7 +27,16 @@ namespace StudentAI.Search
             var random = new Random();
             int index = random.Next(movesWithMaxValue.Count);
 
-            return movesWithMaxValue[index];
+            var selectedMove = movesWithMaxValue[index];
+
+            int recentMoveIndex = 0;
+            while(recentMoves.Contains(selectedMove))
+            {
+                selectedMove = movesInAscendingOrder[recentMoveIndex];
+                recentMoveIndex++;
+            }
+
+            return selectedMove;
         }
     }
 }

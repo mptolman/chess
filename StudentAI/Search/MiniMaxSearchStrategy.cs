@@ -12,7 +12,7 @@ namespace StudentAI.Search
         public MiniMaxSearchStrategy(IChessAI ai, IHeuristic heuristic) : base(ai, heuristic)
         { }
 
-        protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves)
+        protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves, Queue<ChessMove> recentMoves)
         {
             throw new NotImplementedException();
         }
