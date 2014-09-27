@@ -9,19 +9,18 @@ namespace StudentAI.Search
 {
     internal abstract class SearchStrategy
     {
-        private IHeuristic _heuristic;
-        private Queue<ChessMove> recentMoves;
+        private const int MAX_RECENT_MOVES = 5;
+        private int _recentIndex = 0;
 
         /// <summary>
         /// This is used in AddThisMove to avoid infinite recursion.
         /// </summary>
         private bool _searchingForCheckmate = false;
 
-        /// <summary>
-        /// For using the Profiler, Logger, and DecisionTree
-        /// </summary>
         protected IChessAI _ai;
-        
+        protected IHeuristic _heuristic;
+        protected ChessMove[] _recentMoves;
+
         /// <summary>
         /// Implemented by subclasses to select which move to make given all possible moves
         /// </summary>
@@ -29,13 +28,13 @@ namespace StudentAI.Search
         /// <param name="myColor">Which color we're selecting a move for</param>
         /// <param name="moves">The list of available moves to choose from</param>
         /// <returns>ChessMove to make</returns>
-        protected abstract ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves, Queue<ChessMove> recentMoves);
+        protected abstract ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves);
         
         public SearchStrategy(IChessAI ai, IHeuristic heuristic)
         {
             _ai = ai;
             _heuristic = heuristic;
-            recentMoves = new Queue<ChessMove>();
+            _recentMoves = new ChessMove[MAX_RECENT_MOVES];
         }
 
         /// <summary>
@@ -62,10 +61,10 @@ namespace StudentAI.Search
             }
             else
             {
-                nextMove = SelectFromAvailableMoves(board, myColor, allMoves, recentMoves);
-                recentMoves.Enqueue(nextMove);
-                if (recentMoves.Count == 5)
-                    recentMoves.Clear();
+                nextMove = SelectFromAvailableMoves(board, myColor, allMoves);
+
+                _recentIndex %= MAX_RECENT_MOVES;
+                _recentMoves[_recentIndex++] = nextMove;
             }
 
             return nextMove;
@@ -79,7 +78,7 @@ namespace StudentAI.Search
         /// <returns>Returns a collection of all possible moves</returns>
         public IList<ChessMove> GetAllMoves(ChessBoard board, ChessColor myColor)
         {
-            IList<ChessMove> allMoves = new List<ChessMove>();
+            var allMoves = new List<ChessMove>();
 
             // Cycle through the board and generate moves for each of our pieces
             for (int y = 0; y < ChessBoard.NumberOfRows; ++y)
@@ -475,13 +474,8 @@ namespace StudentAI.Search
                 _searchingForCheckmate = false;
             }
 
-            // Get the H value for this move.
-            // Don't calculate if we're just looking for Checkmate (for performance)
-            if (!_searchingForCheckmate)
-                move.ValueOfMove = _heuristic.GetMoveValue(boardAfterMove, move, myColor);
-
             // Now add the move
             moves.Add(move);
-        }        
+        }
     }
 }

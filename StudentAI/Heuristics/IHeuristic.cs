@@ -8,6 +8,6 @@ namespace StudentAI.Heuristics
 {
     interface IHeuristic
     {
-        int GetMoveValue(ChessBoard boardAfterMove, ChessMove move, ChessColor myColor);
+        int GetMoveValue(ChessBoard boardAfterMove, ChessMove opponentsMove, ChessColor myColor);
     }
 }

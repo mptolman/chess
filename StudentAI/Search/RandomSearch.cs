@@ -7,12 +7,12 @@ using StudentAI.Heuristics;
 
 namespace StudentAI.Search
 {
-    internal class RandomSearchStrategy : SearchStrategy
+    internal class RandomSearch : SearchStrategy
     {
-        public RandomSearchStrategy(IChessAI ai, IHeuristic heuristic) : base(ai, heuristic)
+        public RandomSearch(IChessAI ai, IHeuristic heuristic) : base(ai, heuristic)
         { }
 
-        protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves, Queue<ChessMove> recentMoves)
+        protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves)
         {
             Random random = new Random();
             int index = random.Next(moves.Count);

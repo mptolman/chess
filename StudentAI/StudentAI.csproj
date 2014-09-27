@@ -49,13 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Heuristics\DummyHeuristic.cs" />
-    <Compile Include="Heuristics\MattsHeuristic.cs" />
-    <Compile Include="Heuristics\PositionalHeuristic.cs" />
-    <Compile Include="Search\GreedySearchStrategy.cs" />
     <Compile Include="Heuristics\IHeuristic.cs" />
-    <Compile Include="Search\MiniMaxSearchStrategy.cs" />
-    <Compile Include="Search\RandomSearchStrategy.cs" />
+    <Compile Include="Heuristics\MaterialOnlyHeuristic.cs" />
+    <Compile Include="Heuristics\PositionalHeuristic.cs" />
+    <Compile Include="Search\GreedySearch.cs" />
+    <Compile Include="Search\MiniMaxSearch.cs" />
+    <Compile Include="Search\RandomSearch.cs" />
     <Compile Include="Search\SearchStrategy.cs" />
     <Compile Include="StudentAI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
