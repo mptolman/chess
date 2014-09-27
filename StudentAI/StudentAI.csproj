@@ -53,6 +53,7 @@
     <Compile Include="Heuristics\MaterialOnlyHeuristic.cs" />
     <Compile Include="Heuristics\PositionalHeuristic.cs" />
     <Compile Include="Search\GreedySearch.cs" />
+    <Compile Include="Search\MiniMaxAlphaBetaSearch.cs" />
     <Compile Include="Search\MiniMaxSearch.cs" />
     <Compile Include="Search\RandomSearch.cs" />
     <Compile Include="Search\SearchStrategy.cs" />
