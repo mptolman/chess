@@ -21,6 +21,8 @@ namespace StudentAI.Heuristics
                 if (Utility.CanBeCaptured(boardAfterMove, myColor, move.To))
                     moveValue *= 2;
             }
+            if (ChessColor.Black == myColor)
+                moveValue *= -1;
             return moveValue;
         }
 
