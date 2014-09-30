@@ -18,7 +18,10 @@ namespace StudentAI.Search
 
         protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves)
         {
-            ChessMove bestMove = null;
+            ChessMove selectedMove = null;
+            int bestValue = myColor == ChessColor.White ? int.MinValue : int.MaxValue;
+
+            var possibleMoves = new List<ChessMove>();
             ChessColor oppColor = Utility.OppColor(myColor);
 #if DEBUG
             _dt = new DecisionTree(board);
@@ -33,24 +36,35 @@ namespace StudentAI.Search
 #endif
                 move.ValueOfMove = MiniMax(boardAfterMove, move, oppColor, MAX_DEPTH);
 
-                if (myColor == ChessColor.White)
+                if (myColor == ChessColor.White && move.ValueOfMove > bestValue)
                 {
-                    if (bestMove == null || move.ValueOfMove > bestMove.ValueOfMove)
-                        bestMove = move;
+                    bestValue = move.ValueOfMove;
+                    possibleMoves.Add(move);
                 }
-                else if (bestMove == null || move.ValueOfMove < bestMove.ValueOfMove)
+                else if (myColor == ChessColor.Black && move.ValueOfMove < bestValue)
                 {
-                    bestMove = move;
+                    bestValue = move.ValueOfMove;
+                    possibleMoves.Add(move);
+                }
+                else if (move.ValueOfMove == bestValue)
+                {
+                    possibleMoves.Add(move);
                 }
 #if DEBUG
                 _dt.EventualMoveValue = move.ValueOfMove.ToString();
                 _dt = _dt.Parent;
 #endif
             }
+
+            // Pick one of our top valued moves at random
+            var random = new Random();
+            possibleMoves = possibleMoves.Where(move => move.ValueOfMove == bestValue).ToList();
+            selectedMove = possibleMoves[random.Next(possibleMoves.Count)];
+
 #if DEBUG
-            _dt.BestChildMove = bestMove;
+            _dt.BestChildMove = selectedMove;
 #endif
-            return bestMove;
+            return selectedMove;
         }
 
         private int MiniMax(ChessBoard board, ChessMove opponentsMove, ChessColor myColor, int depth)

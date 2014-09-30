@@ -30,7 +30,11 @@ namespace StudentAI.Search
                 // Black: lower is better
                 bestMoves = moves.Where(m => m.ValueOfMove == moves.Min(x => x.ValueOfMove)).ToList();
 
-            // Pick the best move that is not in our recent moves
+            // Randomize the list
+            var rnd = new Random();
+            bestMoves = bestMoves.OrderBy(x => rnd.Next()).ToList();
+
+            // Pick a move that is not in our recent moves
             foreach (var move in bestMoves)
             {
                 selectedMove = move;

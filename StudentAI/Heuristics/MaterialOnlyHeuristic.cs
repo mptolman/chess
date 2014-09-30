@@ -52,9 +52,9 @@ namespace StudentAI.Heuristics
                 case ChessPiece.WhiteQueen:
                     return 9;
                 case ChessPiece.BlackKing:
-                    return -100;
+                    return -11;
                 case ChessPiece.WhiteKing:
-                    return 100;
+                    return 11;
                 default:
                     return 0;
             }

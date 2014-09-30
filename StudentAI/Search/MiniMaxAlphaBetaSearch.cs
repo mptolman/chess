@@ -35,8 +35,17 @@ namespace StudentAI.Search
                 _dt = _dt.LastChild;
 #endif
                 move.ValueOfMove = AlphaBeta(boardAfterMove, move, oppColor, alpha, beta, MAX_DEPTH);
-                if (bestMove == null || move.ValueOfMove > bestMove.ValueOfMove)
+
+                if (myColor == ChessColor.White && move.ValueOfMove > alpha)
+                {
+                    alpha = move.ValueOfMove;
                     bestMove = move;
+                }
+                else if (myColor == ChessColor.Black && move.ValueOfMove < beta)
+                {
+                    beta = move.ValueOfMove;
+                    bestMove = move;
+                }
 #if DEBUG
                 _dt.EventualMoveValue = move.ValueOfMove.ToString();
                 _dt = _dt.Parent;
@@ -69,15 +78,12 @@ namespace StudentAI.Search
 #endif
                 move.ValueOfMove = AlphaBeta(boardAfterMove, move, oppColor, alpha, beta, depth - 1);
 
-                if (myColor == ChessColor.White)
+                if (myColor == ChessColor.White && move.ValueOfMove > alpha)
                 {
-                    if (move.ValueOfMove > alpha)
-                    {
-                        alpha = move.ValueOfMove;
-                        bestMove = move;
-                    }
+                    alpha = move.ValueOfMove;
+                    bestMove = move;
                 }
-                else if (move.ValueOfMove < beta)
+                else if (myColor == ChessColor.Black && move.ValueOfMove < beta)
                 {
                     beta = move.ValueOfMove;
                     bestMove = move;
