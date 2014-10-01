@@ -10,8 +10,9 @@ namespace StudentAI.Search
     internal class MiniMaxSearch : SearchStrategy
     {
         private const int MAX_DEPTH = 2;
+#if DEBUG
         private DecisionTree _dt;
-
+#endif
         public MiniMaxSearch(IChessAI ai, IHeuristic heuristic)
             : base(ai, heuristic)
         { }
