@@ -13,7 +13,7 @@ namespace StudentAI
 
         public StudentAI()
         {
-            _searchStrategy = new MiniMaxSearch(this, new PositionalHeuristic());
+            _searchStrategy = new MiniMaxSearch(this, new MaterialOnlyHeuristic());
         }
 
         #region IChessAI Members that are implemented by the Student
