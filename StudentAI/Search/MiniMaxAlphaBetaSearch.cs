@@ -18,43 +18,52 @@ namespace StudentAI.Search
 
         protected override ChessMove SelectFromAvailableMoves(ChessBoard board, ChessColor myColor, IList<ChessMove> moves)
         {
-            ChessMove bestMove = null;
-            ChessColor oppColor = Utility.OppColor(myColor);
+            ChessMove selectedMove = null;
+            var possibleMoves = new List<ChessMove>();
+
+            var oppColor = Utility.OppColor(myColor);
 
             int alpha = int.MinValue;
             int beta = int.MaxValue;
-#if DEBUG
-            _dt = new DecisionTree(board);
-            _ai.SetDecisionTree(_dt);
-#endif
+      
             foreach (var move in moves)
             {
                 var boardAfterMove = Utility.BoardAfterMove(board, move);
-#if DEBUG
-                _dt.AddChild(boardAfterMove, move);
-                _dt = _dt.LastChild;
-#endif
+
                 move.ValueOfMove = AlphaBeta(boardAfterMove, move, oppColor, alpha, beta, MAX_DEPTH);
 
-                if (myColor == ChessColor.White && move.ValueOfMove > alpha)
+                if (myColor == ChessColor.White)
                 {
-                    alpha = move.ValueOfMove;
-                    bestMove = move;
+                    if (move.ValueOfMove > alpha)
+                    {
+                        alpha = move.ValueOfMove;
+                        selectedMove = move;
+                        possibleMoves.Add(move);
+                    }
+                    else if (move.ValueOfMove == alpha)
+                        possibleMoves.Add(move);
                 }
-                else if (myColor == ChessColor.Black && move.ValueOfMove < beta)
+                else // Black
                 {
-                    beta = move.ValueOfMove;
-                    bestMove = move;
+                    if (move.ValueOfMove < beta)
+                    {
+                        beta = move.ValueOfMove;
+                        selectedMove = move;
+                        possibleMoves.Add(move);
+                    }
+                    else if (move.ValueOfMove == beta)
+                        possibleMoves.Add(move);
                 }
-#if DEBUG
-                _dt.EventualMoveValue = move.ValueOfMove.ToString();
-                _dt = _dt.Parent;
-#endif
             }
-#if DEBUG
-            _dt.BestChildMove = bestMove;
-#endif
-            return bestMove;
+
+            // If I uncomment the following 3 lines of code, then our AI goes to crap.
+            // It seems to work as expected if we don't pick a random move
+
+            //var random = new Random();
+            //possibleMoves = possibleMoves.Where(move => move.ValueOfMove == (myColor == ChessColor.White ? alpha : beta)).ToList();
+            //selectedMove = possibleMoves[random.Next(possibleMoves.Count)];
+
+            return selectedMove;
         }
 
         private int AlphaBeta(ChessBoard board, ChessMove opponentsMove, ChessColor myColor, int alpha, int beta, int depth)
@@ -66,38 +75,23 @@ namespace StudentAI.Search
             if (possibleMoves.Count == 0)
                 return 0; // Stalemate
 
-            ChessMove bestMove = null;
-            ChessColor oppColor = Utility.OppColor(myColor);
+            var oppColor = Utility.OppColor(myColor);
 
             foreach (var move in possibleMoves)
             {
                 var boardAfterMove = Utility.BoardAfterMove(board, move);
-#if DEBUG
-                _dt.AddChild(boardAfterMove, move);
-                _dt = _dt.LastChild;
-#endif
+
                 move.ValueOfMove = AlphaBeta(boardAfterMove, move, oppColor, alpha, beta, depth - 1);
 
-                if (myColor == ChessColor.White && move.ValueOfMove > alpha)
-                {
-                    alpha = move.ValueOfMove;
-                    bestMove = move;
-                }
-                else if (myColor == ChessColor.Black && move.ValueOfMove < beta)
-                {
-                    beta = move.ValueOfMove;
-                    bestMove = move;
-                }
-#if DEBUG
-                _dt.EventualMoveValue = move.ValueOfMove.ToString();
-                _dt = _dt.Parent;
-#endif
-                if (beta <= alpha)
+                if (myColor == ChessColor.White)
+                    alpha = Math.Max(alpha, move.ValueOfMove);
+                else // Black
+                    beta = Math.Min(beta, move.ValueOfMove);
+
+                if (alpha >= beta)
                     break;
             }
-#if DEBUG
-            _dt.BestChildMove = bestMove;
-#endif
+
             return myColor == ChessColor.White ? alpha : beta;
         }
     }

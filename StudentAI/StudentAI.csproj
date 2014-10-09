@@ -59,7 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Heuristics\IHeuristic.cs" />
-    <Compile Include="Heuristics\MaterialOnlyHeuristic.cs" />
+    <Compile Include="Heuristics\MaterialHeuristic.cs" />
     <Compile Include="Heuristics\PositionalHeuristic.cs" />
     <Compile Include="Search\GreedySearch.cs" />
     <Compile Include="Search\MiniMaxAlphaBetaSearch.cs" />
