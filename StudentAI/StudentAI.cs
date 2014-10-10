@@ -24,9 +24,9 @@ namespace StudentAI
         public string Name
         {
 #if DEBUG
-            get { return "KnottyButchersAI (Debug)"; }
+            get { return "Knotty Butchers (Debug)"; }
 #else
-            get { return "KnottyButchersAI"; }
+            get { return "Knotty Butchers"; }
 #endif
         }
 

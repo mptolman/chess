@@ -56,8 +56,7 @@ namespace StudentAI.Search
                 // Technically, we would need to make sure we're not in check before declaring stalemate,
                 // but if we were in check, then the opponent would have flagged checkmate on their last move.
                 // If they didn't set the checkmate flag, then our move validator would have caught their error.
-                nextMove = new ChessMove(null, null);
-                nextMove.Flag = ChessFlag.Stalemate;
+                nextMove = new ChessMove(null, null) { Flag = ChessFlag.Stalemate };
             }
             else
             {
@@ -85,12 +84,12 @@ namespace StudentAI.Search
             {
                 for (int x = 0; x < ChessBoard.NumberOfColumns; ++x)
                 {
-                    var chessPiece = board[x, y];
+                    var piece = board[x, y];
+                    
+                    if (piece == ChessPiece.Empty || Utility.PieceColor(piece) != myColor)
+                        continue;
 
-                    if (chessPiece == ChessPiece.Empty) continue; // Ignore empty tiles
-                    if (Utility.PieceColor(chessPiece) != myColor) continue; // Ignore opponent's pieces
-
-                    AddMovesForThisPiece(board, myColor, chessPiece, x, y, allMoves);
+                    AddMovesForThisPiece(board, myColor, piece, x, y, allMoves);
                 }
             }
 
@@ -463,13 +462,10 @@ namespace StudentAI.Search
                 // Avoid infinite recursion
                 _searchingForCheckmate = true;
 
+                // If the opponent has no available moves, then it's Checkmate
+                // Otherwise, just Check
                 var oppMoves = GetAllMoves(boardAfterMove, oppColor);
-                if (oppMoves.Count == 0)
-                    // If the opponent has no available moves, then it's Checkmate
-                    move.Flag = ChessFlag.Checkmate;
-                else
-                    // Otherwise, just Check
-                    move.Flag = ChessFlag.Check;
+                move.Flag = oppMoves.Count == 0 ? ChessFlag.Checkmate : ChessFlag.Check;
 
                 _searchingForCheckmate = false;
             }
